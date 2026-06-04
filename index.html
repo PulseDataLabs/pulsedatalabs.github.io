@@ -3,11 +3,41 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PulseDataLabs | Serverless Data Infrastructure</title>
-    <meta name="description" content="Infraestrutura serverless de dados para o mercado financeiro. Coleta, normalização e versionamento de preços, indicadores e ratings." />
+    <title>PulseDataLabs — Serverless Data Infrastructure for Financial Markets</title>
+    <meta name="description" content="Infraestrutura serverless de dados para o mercado financeiro. Coleta, normalização e versionamento automatizados de preços, indicadores e ratings." />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pulsedatalabs.github.io" />
+    <meta property="og:title" content="PulseDataLabs — Serverless Data Infrastructure" />
+    <meta property="og:description" content="Infraestrutura serverless de dados para o mercado financeiro. Dados abertos, versionados e prontos para consumo." />
+    <meta property="og:image" content="https://pulsedatalabs.github.io/assets/logo-full.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PulseDataLabs — Serverless Data Infrastructure" />
+    <meta name="twitter:description" content="Infraestrutura serverless de dados para o mercado financeiro. Dados abertos, versionados e prontos para consumo." />
+    <meta name="twitter:image" content="https://pulsedatalabs.github.io/assets/logo-full.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/logo-full.png" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "PulseDataLabs",
+        "url": "https://pulsedatalabs.github.io",
+        "logo": "https://pulsedatalabs.github.io/assets/logo-full.png",
+        "description": "Infraestrutura serverless de dados para o mercado financeiro.",
+        "sameAs": ["https://github.com/PulseDataLabs"]
+    }
+    </script>
+
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -40,6 +70,7 @@
             overflow-x: hidden;
         }
 
+        /* Noise + grid overlay */
         body::before {
             content: '';
             position: fixed;
@@ -62,6 +93,29 @@
             z-index: 0;
         }
 
+        /* Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 1rem;
+            z-index: 200;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent);
+            color: var(--bg);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            border-radius: 0 0 4px 4px;
+            text-decoration: none;
+            transition: top 0.2s;
+        }
+        .skip-link:focus { top: 0; }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Nav */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -72,6 +126,7 @@
             padding: 1.25rem 3rem;
             background: rgba(8,12,16,0.85);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
         }
 
@@ -82,13 +137,14 @@
             text-decoration: none;
         }
 
-        .nav-links {
+        .nav-menu {
             display: flex;
+            align-items: center;
             gap: 2rem;
             list-style: none;
         }
 
-        .nav-links a {
+        .nav-menu a {
             font-family: var(--font-mono);
             font-size: 0.75rem;
             font-weight: 400;
@@ -99,7 +155,8 @@
             transition: color 0.2s;
         }
 
-        .nav-links a:hover { color: var(--accent); }
+        .nav-menu a:hover,
+        .nav-menu a.active { color: var(--accent); }
 
         .nav-cta {
             font-family: var(--font-mono);
@@ -116,6 +173,30 @@
 
         .nav-cta:hover { background: #33ddff; transform: translateY(-1px); }
 
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* Animations */
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; transform: scale(1); }
             50%       { opacity: 0.4; transform: scale(0.7); }
@@ -126,11 +207,7 @@
             50%      { transform: translateY(-8px); }
         }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
+        /* Hero */
         .hero {
             position: relative;
             z-index: 1;
@@ -204,9 +281,9 @@
         .hero-title {
             font-family: var(--font-head);
             font-weight: 800;
-            font-size: clamp(3.5rem, 9vw, 7.5rem);
-            line-height: 0.92;
-            letter-spacing: -0.04em;
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1;
+            letter-spacing: -0.03em;
             margin-bottom: 0.4rem;
         }
 
@@ -221,19 +298,19 @@
 
         .hero-subtitle {
             font-family: var(--font-mono);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--accent);
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .hero-description {
             max-width: 580px;
-            font-size: 1.05rem;
+            font-size: 1rem;
             line-height: 1.75;
             color: var(--text2);
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
 
         .hero-ctas {
@@ -334,6 +411,7 @@
             margin-top: 0.3rem;
         }
 
+        /* Sections */
         section {
             position: relative;
             z-index: 1;
@@ -390,6 +468,14 @@
             border-bottom: 1px solid var(--border);
         }
 
+        /* Product cards */
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
         .card {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -413,13 +499,6 @@
 
         .card:hover .card-accent { opacity: 1; }
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
         .product-header {
             display: flex;
             align-items: center;
@@ -429,6 +508,7 @@
 
         .product-header img {
             height: 2rem;
+            width: auto;
         }
 
         .product-name {
@@ -493,8 +573,10 @@
 
         .link-row svg {
             width: 12px; height: 12px;
+            flex-shrink: 0;
         }
 
+        /* Features */
         .features-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -541,6 +623,7 @@
             color: var(--text2);
         }
 
+        /* Steps */
         .steps-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -585,6 +668,7 @@
             line-height: 1.6;
         }
 
+        /* CTA */
         .cta-section {
             padding: 8rem 0;
             text-align: center;
@@ -614,6 +698,7 @@
             justify-content: center;
         }
 
+        /* Footer */
         footer {
             position: relative;
             z-index: 1;
@@ -690,17 +775,38 @@
             color: var(--text3);
         }
 
+        /* Responsive */
         @media (max-width: 900px) {
             nav { padding: 1rem 1.5rem; }
-            .nav-links { display: none; }
-            .product-grid, .features-grid { grid-template-columns: 1fr; }
+            .hamburger { display: flex; }
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%; left: 0; right: 0;
+                flex-direction: column;
+                gap: 0;
+                background: var(--bg);
+                border-bottom: 1px solid var(--border);
+                padding: 1rem 0;
+            }
+            .nav-menu.open { display: flex; }
+            .nav-menu a {
+                padding: 0.75rem 1.5rem;
+                width: 100%;
+            }
+            .nav-menu .nav-cta {
+                margin: 0.75rem 1.5rem;
+                text-align: center;
+            }
+            .product-grid,
+            .features-grid { grid-template-columns: 1fr; }
             .steps-grid { grid-template-columns: 1fr 1fr; }
             .hero-stats { flex-wrap: wrap; }
             .stat-item { min-width: 50%; border-right: none; border-bottom: 1px solid var(--border); }
         }
 
         @media (max-width: 600px) {
-            .hero-title { font-size: 3rem; }
+            .hero-title { font-size: 2.5rem; }
             .container { padding: 0 1.25rem; }
             .hero { padding: 7rem 1.25rem 4rem; }
             .stat-item { min-width: 100%; }
@@ -710,31 +816,41 @@
 </head>
 <body>
 
+    <!-- Skip link -->
+    <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
     <!-- NAV -->
-    <nav>
-        <a href="#" class="nav-logo">
+    <nav aria-label="Navegação principal">
+        <a href="#" class="nav-logo" aria-label="PulseDataLabs — início">
             <img src="assets/logo-full.png" alt="PulseDataLabs" style="height: 20px;">
         </a>
-        <ul class="nav-links">
-            <li><a href="#produtos">Produtos</a></li>
-            <li><a href="#diferenciais">Diferenciais</a></li>
-            <li><a href="#como-funciona">Como funciona</a></li>
+
+        <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="nav-menu" id="nav-menu" role="menubar">
+            <li role="none"><a href="#produtos" role="menuitem">Produtos</a></li>
+            <li role="none"><a href="#diferenciais" role="menuitem">Diferenciais</a></li>
+            <li role="none"><a href="#como-funciona" role="menuitem">Como funciona</a></li>
+            <li role="none"><a href="https://github.com/PulseDataLabs" target="_blank" class="nav-cta" role="menuitem" aria-label="GitHub (abre em nova aba)">GitHub ↗</a></li>
         </ul>
-        <a href="https://github.com/PulseDataLabs" target="_blank" class="nav-cta">GitHub ↗</a>
     </nav>
 
     <!-- HERO -->
-    <section class="hero">
-        <div class="hero-orb hero-orb-1"></div>
-        <div class="hero-orb hero-orb-2"></div>
-        <div class="hero-orb hero-orb-3"></div>
+    <section class="hero" id="main">
+        <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+        <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+        <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
 
-        <div style="margin-bottom: 2rem; animation: float 6s ease-in-out infinite;">
-            <img src="assets/logo-full.png" alt="PulseDataLabs" style="height: 100px;">
+        <div style="margin-bottom: 2rem; animation: float 6s ease-in-out infinite;" aria-hidden="true">
+            <img src="assets/logo-full.png" alt="" style="height: 100px;">
         </div>
 
-        <div class="ticker-bar">
-            <span class="status-dot"></span>
+        <div class="ticker-bar" aria-hidden="true">
+            <span class="status-dot" aria-hidden="true"></span>
             Serverless Data Infrastructure
         </div>
 
@@ -744,22 +860,22 @@
             <span class="line-solid">Labs</span>
         </h1>
 
-        <span class="hero-subtitle">Dados financeiros sem complexidade</span>
+        <p class="hero-subtitle">Dados financeiros sem complexidade</p>
 
         <p class="hero-description">
-            Construímos infraestrutura de dados moderna e descentralizada para o mercado financeiro
-            global. Automatizamos o pipeline completo de captura, normalização e versionamento
-            de preços, indicadores econômicos e ratings de crédito.
+            Infraestrutura serverless de dados para o mercado financeiro.
+            Captura, normalização e versionamento automatizados de preços,
+            indicadores econômicos e ratings de crédito — tudo open-source.
         </p>
 
         <div class="hero-ctas">
             <a href="#produtos" class="btn-primary">Explorar Produtos</a>
-            <a href="https://github.com/PulseDataLabs" target="_blank" class="btn-secondary">Ver no GitHub</a>
+            <a href="https://github.com/PulseDataLabs" target="_blank" class="btn-secondary" aria-label="Ver no GitHub (abre em nova aba)">Ver no GitHub</a>
         </div>
     </section>
 
     <!-- STATS -->
-    <div class="hero-stats">
+    <div class="hero-stats" role="region" aria-label="Estatísticas">
         <div class="stat-item">
             <span class="stat-value">2</span>
             <span class="stat-label">Data Feeds</span>
@@ -779,24 +895,24 @@
     </div>
 
     <!-- PRODUTOS -->
-    <section id="produtos" class="section-pad">
+    <section id="produtos" class="section-pad" aria-label="Produtos">
         <div class="container">
             <div class="section-label">Data Feeds</div>
             <h2 class="section-title">Nossos Produtos</h2>
-            <p class="section-desc">Pipelines de dados prontos para consumo. Sem APIs, sem burocracia.</p>
+            <p class="section-desc">Pipelines de dados prontos para consumo. Dados abertos, versionados e atualizados diariamente.</p>
 
             <div class="product-grid">
                 <div class="card">
-                    <div class="card-accent"></div>
+                    <div class="card-accent" aria-hidden="true"></div>
                     <div class="product-header">
-                        <img src="https://pulsedatalabs.github.io/PulseFlat/assets/logo-full.png" alt="PulseFlat">
+                        <img src="assets/pulseflat-logo.png" alt="PulseFlat logo">
                         <div>
                             <div class="product-name">PulseFlat</div>
                             <div class="product-tag">Pipeline ETL Serverless</div>
                         </div>
                     </div>
                     <p class="product-desc">
-                        Captura diária de preços de mercado e indicadores financeiros de fontes oficiais (BCB, ANBIMA, B3, CVM, IBGE). Dados abertos e estruturados.
+                        Captura diária de preços de mercado e indicadores financeiros de fontes oficiais (BCB, ANBIMA, B3, CVM, IBGE). Dados abertos e estruturados em CSV.
                     </p>
                     <div class="pill-group">
                         <span class="pill">CSV</span>
@@ -804,21 +920,21 @@
                         <span class="pill">Open-Source</span>
                     </div>
                     <div class="link-row">
-                        <a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank">
-                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        <a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank" aria-label="PulseFlat no GitHub (abre em nova aba)">
+                            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
                             GitHub
                         </a>
-                        <a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank" aria-label="Site do PulseFlat (abre em nova aba)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             Site
                         </a>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-accent"></div>
+                    <div class="card-accent" aria-hidden="true"></div>
                     <div class="product-header">
-                        <img src="https://pulsedatalabs.github.io/PulseRatingsBrasil/assets/logo-full.png" alt="PulseRatings Brasil">
+                        <img src="assets/pulseratings-logo.png" alt="PulseRatings Brasil logo">
                         <div>
                             <div class="product-name">PulseRatings Brasil</div>
                             <div class="product-tag">Credit Risk Monitoring</div>
@@ -833,12 +949,12 @@
                         <span class="pill">Market History</span>
                     </div>
                     <div class="link-row">
-                        <a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank">
-                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        <a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank" aria-label="PulseRatings Brasil no GitHub (abre em nova aba)">
+                            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
                             GitHub
                         </a>
-                        <a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank" aria-label="Site do PulseRatings Brasil (abre em nova aba)">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             Site
                         </a>
                     </div>
@@ -848,7 +964,7 @@
     </section>
 
     <!-- DIFERENCIAIS -->
-    <section id="diferenciais" class="section-pad alt-bg">
+    <section id="diferenciais" class="section-pad alt-bg" aria-label="Diferenciais">
         <div class="container">
             <div class="section-label">Diferenciais</div>
             <h2 class="section-title">Por que a PulseDataLabs?</h2>
@@ -857,7 +973,7 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
                     </div>
                     <div class="feature-title">Dados como Código</div>
                     <p class="feature-desc">Armazenamento em arquivos planos versionados via Git, garantindo rastreabilidade e histórico completo do mercado.</p>
@@ -865,7 +981,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
                     </div>
                     <div class="feature-title">Arquitetura Serverless</div>
                     <p class="feature-desc">Pipelines acionados por eventos via GitHub Actions. Alta disponibilidade sem custos de servidores ociosos.</p>
@@ -873,7 +989,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
                     </div>
                     <div class="feature-title">Pronto para Integração</div>
                     <p class="feature-desc">Consuma os CSVs diretamente no seu modelo em Python, Excel, R ou Power BI. Sem APIs complexas.</p>
@@ -883,30 +999,30 @@
     </section>
 
     <!-- COMO FUNCIONA -->
-    <section id="como-funciona" class="section-pad">
+    <section id="como-funciona" class="section-pad" aria-label="Como funciona">
         <div class="container">
             <div class="section-label">Pipeline</div>
             <h2 class="section-title">Como funciona</h2>
-            <p class="section-desc">O ciclo que garante dados confiáveis todos os dias.</p>
+            <p class="section-desc">Dados atualizados automaticamente todos os dias úteis, do agendamento ao consumo.</p>
 
             <div class="steps-grid">
                 <div class="step-item">
-                    <div class="step-icon-box">⏰</div>
+                    <div class="step-icon-box" aria-hidden="true">⏰</div>
                     <div class="step-title">Agendamento</div>
                     <div class="step-desc">GitHub Actions dispara a coleta em horários pré-definidos, seg–sex.</div>
                 </div>
                 <div class="step-item">
-                    <div class="step-icon-box">🔗</div>
+                    <div class="step-icon-box" aria-hidden="true">🔗</div>
                     <div class="step-title">Captura</div>
                     <div class="step-desc">Scrapers acessam fontes oficiais e APIs públicas para extrair os dados.</div>
                 </div>
                 <div class="step-item">
-                    <div class="step-icon-box">📄</div>
+                    <div class="step-icon-box" aria-hidden="true">📄</div>
                     <div class="step-title">Normalização</div>
                     <div class="step-desc">Dados padronizados em UTF-8, CSV, e armazenados no repositório.</div>
                 </div>
                 <div class="step-item">
-                    <div class="step-icon-box">📥</div>
+                    <div class="step-icon-box" aria-hidden="true">📥</div>
                     <div class="step-title">Consumo</div>
                     <div class="step-desc">CSVs prontos para download e importação direta em qualquer ferramenta.</div>
                 </div>
@@ -914,14 +1030,21 @@
         </div>
     </section>
 
-    <!-- CTA -->
-    <section class="alt-bg">
+    <!-- CTA / QUICK START -->
+    <section class="alt-bg" aria-label="Comece agora">
         <div class="container cta-section">
-            <h2>Começando pelo Brasil,<br>mirando o mercado global.</h2>
-            <p>Nossa arquitetura está preparada para integrar feeds de mercados internacionais, pavimentando o caminho para soluções Enterprise e APIs de baixa latência.</p>
+            <h2>Pronto para usar?</h2>
+            <p>
+                Clone o repositório, aponte seu <code style="color:var(--accent);font-family:var(--font-mono);font-size:0.85rem;">pd.read_csv()</code> para as URLs raw do GitHub
+                e comece a consumir dados financeiros de qualidade em minutos.
+            </p>
             <div class="cta-buttons">
-                <a href="https://github.com/PulseDataLabs" target="_blank" class="btn-primary">Acompanhe no GitHub</a>
-                <a href="#produtos" class="btn-secondary">Ver Data Feeds</a>
+                <a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank" class="btn-primary" aria-label="Começar com PulseFlat (abre em nova aba)">
+                    Começar com PulseFlat
+                </a>
+                <a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank" class="btn-primary" style="background:var(--accent2);" aria-label="Começar com PulseRatings (abre em nova aba)">
+                    Começar com PulseRatings
+                </a>
             </div>
         </div>
     </section>
@@ -937,26 +1060,67 @@
                 <div class="footer-col">
                     <h4>Produtos</h4>
                     <ul>
-                        <li><a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank">PulseFlat</a></li>
-                        <li><a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank">PulseRatings Brasil</a></li>
+                        <li><a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank" aria-label="PulseFlat no GitHub (abre em nova aba)">PulseFlat</a></li>
+                        <li><a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank" aria-label="PulseRatings Brasil no GitHub (abre em nova aba)">PulseRatings Brasil</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>Links</h4>
                     <ul>
-                        <li><a href="https://github.com/PulseDataLabs" target="_blank">GitHub</a></li>
+                        <li><a href="https://github.com/PulseDataLabs" target="_blank" aria-label="GitHub (abre em nova aba)">GitHub</a></li>
                         <li><a href="https://pulsedatalabs.github.io">Site</a></li>
-                        <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank">PulseFlat Site</a></li>
-                        <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank">PulseRatings Site</a></li>
+                        <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank" aria-label="PulseFlat Site (abre em nova aba)">PulseFlat Site</a></li>
+                        <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank" aria-label="PulseRatings Site (abre em nova aba)">PulseRatings Site</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
                 <span class="footer-copy">&copy; 2026 PulseDataLabs</span>
-                <span class="footer-copy">Dados abertos · Open-source</span>
+                <span class="footer-copy">Dados abertos · Open-source · MIT</span>
             </div>
         </div>
     </footer>
+
+    <script>
+        // Hamburger menu
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+
+        hamburger.addEventListener('click', function () {
+            const open = navMenu.classList.toggle('open');
+            hamburger.classList.toggle('open');
+            hamburger.setAttribute('aria-expanded', open);
+            hamburger.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+        });
+
+        // Close menu on link click (mobile)
+        navMenu.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                navMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+                hamburger.setAttribute('aria-label', 'Abrir menu');
+            });
+        });
+
+        // Scroll spy
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+
+        if (sections.length && navLinks.length) {
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(function (link) {
+                            link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+                        });
+                    }
+                });
+            }, { threshold: 0.4 });
+
+            sections.forEach(function (s) { observer.observe(s); });
+        }
+    </script>
 
 </body>
 </html>
