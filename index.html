@@ -1,213 +1,844 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseDataLabs | Serverless Data Infrastructure</title>
-    <meta name="description" content="Infraestrutura serverless de dados para o mercado financeiro. Coleta, normalização e versionamento de preços, indicadores e ratings.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: '#0a1128',
-                        emerald: '#10b981',
-                        electric: '#3b82f6',
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'glow': 'glow 3s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        glow: {
-                            '0%': { opacity: '0.4' },
-                            '100%': { opacity: '0.8' },
-                        },
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="description" content="Infraestrutura serverless de dados para o mercado financeiro. Coleta, normalização e versionamento de preços, indicadores e ratings." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
     <style>
-        .text-gradient {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(to right, #10b981, #3b82f6);
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #080c10;
+            --bg2:       #0d1218;
+            --bg3:       #111820;
+            --surface:   #141c26;
+            --border:    #1e2d3d;
+            --border2:   #243444;
+            --accent:    #00d4ff;
+            --accent2:   #0095c8;
+            --gold:      #f0b429;
+            --green:     #00e5a0;
+            --red:       #ff4d6d;
+            --text:      #e8eef4;
+            --text2:     #8fa3b8;
+            --text3:     #4d6070;
+            --font-head: 'Syne', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'Lora', serif;
         }
-        .bg-grid {
-            background-image:
-                linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
         }
-        .card-gradient-border {
-            position: relative;
-        }
-        .card-gradient-border::before {
+
+        body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             inset: 0;
-            border-radius: 0.75rem;
-            padding: 1px;
-            background: linear-gradient(to bottom right, rgba(16, 185, 129, 0.3), rgba(59, 130, 246, 0.1), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 3rem;
+            background: rgba(8,12,16,0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text2);
+            text-decoration: none;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--accent); }
+
+        .nav-cta {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--bg);
+            background: var(--accent);
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .nav-cta:hover { background: #33ddff; transform: translateY(-1px); }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-8px); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 6rem;
+            overflow: hidden;
+        }
+
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
             pointer-events: none;
         }
-        .glass {
-            background: rgba(10, 17, 40, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        .hero-orb-1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,212,255,0.12), transparent 70%);
+            top: -100px; left: -150px;
+            animation: drift1 12s ease-in-out infinite alternate;
         }
-        html {
-            scroll-behavior: smooth;
+        .hero-orb-2 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(240,180,41,0.08), transparent 70%);
+            bottom: -80px; right: -100px;
+            animation: drift2 15s ease-in-out infinite alternate;
+        }
+        .hero-orb-3 {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(0,229,160,0.06), transparent 70%);
+            top: 40%; left: 55%;
+            animation: drift3 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px, 40px); } }
+        @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-40px, -60px); } }
+        @keyframes drift3 { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
+
+        .ticker-bar {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text3);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ticker-bar::before, .ticker-bar::after {
+            content: '';
+            width: 40px; height: 1px;
+            background: var(--border2);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+            margin-right: 0.3rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-head);
+            font-weight: 800;
+            font-size: clamp(3.5rem, 9vw, 7.5rem);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            margin-bottom: 0.4rem;
+        }
+
+        .hero-title .line-accent {
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--accent);
+        }
+
+        .hero-title .line-solid {
+            color: var(--text);
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .hero-description {
+            max-width: 580px;
+            font-size: 1.05rem;
+            line-height: 1.75;
+            color: var(--text2);
+            margin-bottom: 3rem;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--bg);
+            background: var(--accent);
+            padding: 0.9rem 2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 0 30px rgba(0,212,255,0.2);
+        }
+
+        .btn-primary:hover {
+            background: #33ddff;
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0,212,255,0.35);
+        }
+
+        .btn-secondary {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text2);
+            background: transparent;
+            padding: 0.9rem 2rem;
+            border-radius: 4px;
+            border: 1px solid var(--border2);
+            text-decoration: none;
+            transition: border-color 0.2s, color 0.2s, transform 0.15s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .hero-stats {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg2);
+        }
+
+        .stat-item {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            border-right: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-item:last-child { border-right: none; }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-item:hover::before { opacity: 1; }
+
+        .stat-value {
+            font-family: var(--font-head);
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--text);
+            letter-spacing: -0.03em;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.3rem;
+        }
+
+        section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-pad {
+            padding: 8rem 0;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.75;
+            max-width: 560px;
+        }
+
+        .alt-bg {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: background 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover { background: var(--surface); }
+
+        .card-accent {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover .card-accent { opacity: 1; }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .product-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-header img {
+            height: 2rem;
+        }
+
+        .product-name {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: -0.01em;
+        }
+
+        .product-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text3);
+        }
+
+        .product-desc {
+            font-size: 0.88rem;
+            line-height: 1.65;
+            color: var(--text2);
+            margin-bottom: 1.5rem;
+        }
+
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pill {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            padding: 0.25rem 0.6rem;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .link-row {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .link-row a {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+            letter-spacing: 0.04em;
+        }
+
+        .link-row a:hover { color: var(--accent); }
+
+        .link-row svg {
+            width: 12px; height: 12px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: background 0.25s;
+        }
+
+        .feature-card:hover { background: var(--bg2); }
+
+        .feature-icon {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: var(--bg3);
+            border: 1px solid var(--border2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-icon svg {
+            width: 18px; height: 18px;
+            color: var(--accent);
+        }
+
+        .feature-title {
+            font-family: var(--font-head);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-desc {
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text2);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-item {
+            text-align: center;
+        }
+
+        .step-icon-box {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.1rem;
+            transition: all 0.25s;
+        }
+
+        .step-item:hover .step-icon-box {
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 0 20px rgba(0,212,255,0.4);
+        }
+
+        .step-title {
+            font-family: var(--font-head);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .step-desc {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text3);
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            padding: 8rem 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.75;
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 3rem 0;
+            background: var(--bg);
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-brand {
+            max-width: 280px;
+        }
+
+        .footer-brand img {
+            height: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text3);
+            line-height: 1.6;
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-col a {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text3);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover { color: var(--accent); }
+
+        .footer-bottom {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-copy {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text3);
+        }
+
+        @media (max-width: 900px) {
+            nav { padding: 1rem 1.5rem; }
+            .nav-links { display: none; }
+            .product-grid, .features-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr 1fr; }
+            .hero-stats { flex-wrap: wrap; }
+            .stat-item { min-width: 50%; border-right: none; border-bottom: 1px solid var(--border); }
+        }
+
+        @media (max-width: 600px) {
+            .hero-title { font-size: 3rem; }
+            .container { padding: 0 1.25rem; }
+            .hero { padding: 7rem 1.25rem 4rem; }
+            .stat-item { min-width: 100%; }
+            .steps-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-<body class="bg-navy text-slate-300 font-sans antialiased selection:bg-emerald-500/30 selection:text-emerald-300">
+<body>
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-800/50">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-3">
-                <img src="assets/logo-full.png" alt="PulseDataLabs" class="h-8">
-            </a>
-            <div class="hidden sm:flex items-center gap-8 text-sm font-medium text-slate-400">
-                <a href="#produtos" class="hover:text-emerald-400 transition-colors">Produtos</a>
-                <a href="#diferenciais" class="hover:text-emerald-400 transition-colors">Diferenciais</a>
-                <a href="#como-funciona" class="hover:text-emerald-400 transition-colors">Como Funciona</a>
-                <a href="https://github.com/PulseDataLabs" target="_blank" class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-semibold hover:opacity-90 transition-opacity text-sm">
-                    GitHub
-                </a>
-            </div>
-        </div>
+    <!-- NAV -->
+    <nav>
+        <a href="#" class="nav-logo">
+            <img src="assets/logo-full.png" alt="PulseDataLabs" style="height: 20px;">
+        </a>
+        <ul class="nav-links">
+            <li><a href="#produtos">Produtos</a></li>
+            <li><a href="#diferenciais">Diferenciais</a></li>
+            <li><a href="#como-funciona">Como funciona</a></li>
+        </ul>
+        <a href="https://github.com/PulseDataLabs" target="_blank" class="nav-cta">GitHub ↗</a>
     </nav>
 
-    <!-- Hero -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 bg-grid"></div>
-        <div class="absolute top-1/4 -left-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-glow"></div>
-        <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-glow" style="animation-delay: 1.5s"></div>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+        <div class="hero-orb hero-orb-3"></div>
 
-        <div class="relative max-w-4xl mx-auto px-6 text-center pt-24 pb-20">
-            <img src="assets/logo-full.png" alt="PulseDataLabs" class="h-20 md:h-28 mx-auto mb-10 drop-shadow-2xl animate-float">
+        <div style="margin-bottom: 2rem; animation: float 6s ease-in-out infinite;">
+            <img src="assets/logo-full.png" alt="PulseDataLabs" style="height: 100px;">
+        </div>
 
-            <h1 class="sr-only">PulseDataLabs</h1>
+        <div class="ticker-bar">
+            <span class="status-dot"></span>
+            Serverless Data Infrastructure
+        </div>
 
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-8">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                Serverless Data Infrastructure
-            </div>
+        <h1 class="hero-title">
+            <span class="line-solid">Pulse</span>
+            <span class="line-accent">Data</span>
+            <span class="line-solid">Labs</span>
+        </h1>
 
-            <p class="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed mb-10">
-                Construímos infraestrutura de dados moderna e descentralizada para o mercado financeiro global. Automatizamos o pipeline completo de captura, normalização e versionamento de preços, indicadores econômicos e ratings de crédito, entregando dados limpos e prontos para consumo com <strong class="text-white">zero fricção de infraestrutura</strong>.
-            </p>
+        <span class="hero-subtitle">Dados financeiros sem complexidade</span>
 
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#produtos" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-semibold hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5">
-                    Explorar Produtos
-                </a>
-                <a href="https://github.com/PulseDataLabs" target="_blank" class="px-8 py-3.5 rounded-xl bg-slate-800/80 text-white font-semibold hover:bg-slate-700 transition-all duration-300 border border-slate-700 hover:border-slate-600 hover:-translate-y-0.5 inline-flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                    Ver no GitHub
-                </a>
-            </div>
+        <p class="hero-description">
+            Construímos infraestrutura de dados moderna e descentralizada para o mercado financeiro
+            global. Automatizamos o pipeline completo de captura, normalização e versionamento
+            de preços, indicadores econômicos e ratings de crédito.
+        </p>
 
-            <div class="mt-16 flex items-center justify-center gap-8 text-sm text-slate-500">
-                <span class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Dados Abertos
-                </span>
-                <span class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Atualização Diária
-                </span>
-                <span class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Versionado em Git
-                </span>
-            </div>
+        <div class="hero-ctas">
+            <a href="#produtos" class="btn-primary">Explorar Produtos</a>
+            <a href="https://github.com/PulseDataLabs" target="_blank" class="btn-secondary">Ver no GitHub</a>
         </div>
     </section>
 
-    <!-- Stats -->
-    <section class="border-y border-slate-800/50 bg-slate-900/30">
-        <div class="max-w-5xl mx-auto px-6 py-12">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div>
-                    <div class="text-3xl font-bold text-white">2</div>
-                    <div class="text-sm text-slate-500 mt-1">Data Feeds</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-white">5+</div>
-                    <div class="text-sm text-slate-500 mt-1">Fontes de Dados</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-white">100%</div>
-                    <div class="text-sm text-slate-500 mt-1">Open Data</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-white">Zero</div>
-                    <div class="text-sm text-slate-500 mt-1">Custo de Infra</div>
-                </div>
-            </div>
+    <!-- STATS -->
+    <div class="hero-stats">
+        <div class="stat-item">
+            <span class="stat-value">2</span>
+            <span class="stat-label">Data Feeds</span>
         </div>
-    </section>
+        <div class="stat-item">
+            <span class="stat-value">5+</span>
+            <span class="stat-label">Fontes de dados</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">Open Data</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value">Zero</span>
+            <span class="stat-label">Custo de infra</span>
+        </div>
+    </div>
 
-    <!-- Produtos -->
-    <section id="produtos" class="py-24">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <span class="text-emerald-400 text-sm font-semibold tracking-widest uppercase">Data Feeds</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-white mt-3">Nossos Produtos</h2>
-                <p class="text-slate-400 mt-3 max-w-2xl mx-auto">Pipelines de dados prontos para consumo. Sem APIs, sem burocracia.</p>
-            </div>
+    <!-- PRODUTOS -->
+    <section id="produtos" class="section-pad">
+        <div class="container">
+            <div class="section-label">Data Feeds</div>
+            <h2 class="section-title">Nossos Produtos</h2>
+            <p class="section-desc">Pipelines de dados prontos para consumo. Sem APIs, sem burocracia.</p>
 
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="card-gradient-border bg-slate-800/40 p-8 rounded-xl group hover:bg-slate-800/60 transition-all duration-500 hover:-translate-y-1">
-                    <img src="https://pulsedatalabs.github.io/PulseFlat/assets/logo-full.png" alt="PulseFlat" class="h-12 mb-5 opacity-90 group-hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">PulseFlat</h3>
-                    <p class="text-slate-400 mb-6 leading-relaxed">Pipeline ETL serverless que captura diariamente preços de mercado e indicadores financeiros de fontes oficiais (BCB, ANBIMA, B3, CVM, IBGE). Dados abertos e estruturados.</p>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        <span class="text-xs font-mono px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">CSV</span>
-                        <span class="text-xs font-mono px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Daily</span>
-                        <span class="text-xs font-mono px-3 py-1.5 rounded-full bg-slate-700/50 text-slate-400 border border-slate-600/50">Open-Source</span>
+            <div class="product-grid">
+                <div class="card">
+                    <div class="card-accent"></div>
+                    <div class="product-header">
+                        <img src="https://pulsedatalabs.github.io/PulseFlat/assets/logo-full.png" alt="PulseFlat">
+                        <div>
+                            <div class="product-name">PulseFlat</div>
+                            <div class="product-tag">Pipeline ETL Serverless</div>
+                        </div>
                     </div>
-                    <div class="flex flex-wrap gap-3 pt-4 border-t border-slate-700/50">
-                        <a href="https://github.com/PulseDataLabs/pulseflat" target="_blank" class="flex items-center gap-2 text-sm text-slate-400 hover:text-emerald-400 transition-colors">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                    <p class="product-desc">
+                        Captura diária de preços de mercado e indicadores financeiros de fontes oficiais (BCB, ANBIMA, B3, CVM, IBGE). Dados abertos e estruturados.
+                    </p>
+                    <div class="pill-group">
+                        <span class="pill">CSV</span>
+                        <span class="pill">Daily</span>
+                        <span class="pill">Open-Source</span>
+                    </div>
+                    <div class="link-row">
+                        <a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
                             GitHub
                         </a>
-                        <a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank" class="flex items-center gap-2 text-sm text-slate-400 hover:text-emerald-400 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                        <a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             Site
                         </a>
                     </div>
                 </div>
 
-                <div class="card-gradient-border bg-slate-800/40 p-8 rounded-xl group hover:bg-slate-800/60 transition-all duration-500 hover:-translate-y-1">
-                    <img src="https://pulsedatalabs.github.io/PulseRatingsBrasil/assets/logo-full.png" alt="PulseRatings Brasil" class="h-12 mb-5 opacity-90 group-hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">PulseRatings Brasil</h3>
-                    <p class="text-slate-400 mb-6 leading-relaxed">Monitoramento automatizado e histórico consolidado de ratings de crédito corporativos e soberanos das agências S&P Global, Moody's e Fitch.</p>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        <span class="text-xs font-mono px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">CSV</span>
-                        <span class="text-xs font-mono px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Credit Risk</span>
-                        <span class="text-xs font-mono px-3 py-1.5 rounded-full bg-slate-700/50 text-slate-400 border border-slate-600/50">Market History</span>
+                <div class="card">
+                    <div class="card-accent"></div>
+                    <div class="product-header">
+                        <img src="https://pulsedatalabs.github.io/PulseRatingsBrasil/assets/logo-full.png" alt="PulseRatings Brasil">
+                        <div>
+                            <div class="product-name">PulseRatings Brasil</div>
+                            <div class="product-tag">Credit Risk Monitoring</div>
+                        </div>
                     </div>
-                    <div class="flex flex-wrap gap-3 pt-4 border-t border-slate-700/50">
-                        <a href="https://github.com/PulseDataLabs/pulseratings" target="_blank" class="flex items-center gap-2 text-sm text-slate-400 hover:text-emerald-400 transition-colors">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                    <p class="product-desc">
+                        Monitoramento automatizado e histórico consolidado de ratings de crédito corporativos e soberanos das agências S&P Global, Moody's e Fitch.
+                    </p>
+                    <div class="pill-group">
+                        <span class="pill">CSV</span>
+                        <span class="pill">Credit Risk</span>
+                        <span class="pill">Market History</span>
+                    </div>
+                    <div class="link-row">
+                        <a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
                             GitHub
                         </a>
-                        <a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank" class="flex items-center gap-2 text-sm text-slate-400 hover:text-emerald-400 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                        <a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             Site
                         </a>
                     </div>
@@ -216,138 +847,113 @@
         </div>
     </section>
 
-    <!-- Diferenciais -->
-    <section id="diferenciais" class="py-24 bg-slate-900/30 border-y border-slate-800/50">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <span class="text-emerald-400 text-sm font-semibold tracking-widest uppercase">Diferenciais</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-white mt-3">Por que a PulseDataLabs?</h2>
-                <p class="text-slate-400 mt-3 max-w-2xl mx-auto">Engenharia de dados pensada para escala, transparência e simplicidade.</p>
-            </div>
+    <!-- DIFERENCIAIS -->
+    <section id="diferenciais" class="section-pad alt-bg">
+        <div class="container">
+            <div class="section-label">Diferenciais</div>
+            <h2 class="section-title">Por que a PulseDataLabs?</h2>
+            <p class="section-desc">Engenharia de dados pensada para escala, transparência e simplicidade.</p>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-slate-800/30 p-8 rounded-xl border border-slate-700/50 hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-5">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path></svg>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-3">Dados como Código</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Armazenamento estável em arquivos planos (flat files) e versionados nativamente via Git, permitindo rastreabilidade e histórico completo do mercado.</p>
+                    <div class="feature-title">Dados como Código</div>
+                    <p class="feature-desc">Armazenamento em arquivos planos versionados via Git, garantindo rastreabilidade e histórico completo do mercado.</p>
                 </div>
 
-                <div class="bg-slate-800/30 p-8 rounded-xl border border-slate-700/50 hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-5">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-3">Arquitetura Serverless</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Pipelines acionados por eventos e automações via GitHub Actions. Alta disponibilidade e consistência diária sem custos de servidores ociosos.</p>
+                    <div class="feature-title">Arquitetura Serverless</div>
+                    <p class="feature-desc">Pipelines acionados por eventos via GitHub Actions. Alta disponibilidade sem custos de servidores ociosos.</p>
                 </div>
 
-                <div class="bg-slate-800/30 p-8 rounded-xl border border-slate-700/50 hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-5">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-3">Pronto para Integração</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Sem APIs complexas na fase inicial. Consuma os CSVs diretamente no seu modelo em Python, Excel, R ou Power BI.</p>
+                    <div class="feature-title">Pronto para Integração</div>
+                    <p class="feature-desc">Consuma os CSVs diretamente no seu modelo em Python, Excel, R ou Power BI. Sem APIs complexas.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Como Funciona -->
-    <section id="como-funciona" class="py-24">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <span class="text-emerald-400 text-sm font-semibold tracking-widest uppercase">O Padrão</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-white mt-3">Como Funciona</h2>
-                <p class="text-slate-400 mt-3 max-w-2xl mx-auto">O ciclo que garante dados confiáveis todos os dias.</p>
-            </div>
+    <!-- COMO FUNCIONA -->
+    <section id="como-funciona" class="section-pad">
+        <div class="container">
+            <div class="section-label">Pipeline</div>
+            <h2 class="section-title">Como funciona</h2>
+            <p class="section-desc">O ciclo que garante dados confiáveis todos os dias.</p>
 
-            <div class="relative">
-                <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-emerald-500/20 -translate-y-1/2"></div>
-                <div class="grid md:grid-cols-4 gap-8">
-                    <div class="relative text-center">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/20 relative z-10">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Coleta</h3>
-                        <p class="text-slate-500 text-sm">Automatizada de fontes oficiais via GitHub Actions</p>
-                    </div>
-
-                    <div class="relative text-center">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-blue-500/20 relative z-10">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Normalização</h3>
-                        <p class="text-slate-500 text-sm">Estrutura rígida e consistente para todos os feeds</p>
-                    </div>
-
-                    <div class="relative text-center">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/20 relative z-10">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Versionamento</h3>
-                        <p class="text-slate-500 text-sm">Histórico imutável e auditável via Git</p>
-                    </div>
-
-                    <div class="relative text-center">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-blue-500/20 relative z-10">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Consumo</h3>
-                        <p class="text-slate-500 text-sm">CSVs prontos para Python, Excel, Power BI e mais</p>
-                    </div>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-icon-box">⏰</div>
+                    <div class="step-title">Agendamento</div>
+                    <div class="step-desc">GitHub Actions dispara a coleta em horários pré-definidos, seg–sex.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon-box">🔗</div>
+                    <div class="step-title">Captura</div>
+                    <div class="step-desc">Scrapers acessam fontes oficiais e APIs públicas para extrair os dados.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon-box">📄</div>
+                    <div class="step-title">Normalização</div>
+                    <div class="step-desc">Dados padronizados em UTF-8, CSV, e armazenados no repositório.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon-box">📥</div>
+                    <div class="step-title">Consumo</div>
+                    <div class="step-desc">CSVs prontos para download e importação direta em qualquer ferramenta.</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA -->
-    <section class="py-24 bg-slate-900/30 border-t border-slate-800/50">
-        <div class="max-w-3xl mx-auto px-6 text-center">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 flex items-center justify-center mx-auto mb-6">
-                <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Começando pelo Brasil,<br>mirando o mercado global.</h2>
-            <p class="text-slate-400 mb-10 max-w-xl mx-auto">Nossa arquitetura está preparada para integrar feeds de mercados internacionais, pavimentando o caminho para soluções Enterprise e APIs de baixa latência.</p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="https://github.com/PulseDataLabs" target="_blank" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-semibold hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5">
-                    Acompanhe no GitHub
-                </a>
-                <a href="#produtos" class="px-8 py-3.5 rounded-xl bg-slate-800/80 text-white font-semibold hover:bg-slate-700 transition-all duration-300 border border-slate-700 hover:border-slate-600 hover:-translate-y-0.5">
-                    Ver Data Feeds
-                </a>
+    <section class="alt-bg">
+        <div class="container cta-section">
+            <h2>Começando pelo Brasil,<br>mirando o mercado global.</h2>
+            <p>Nossa arquitetura está preparada para integrar feeds de mercados internacionais, pavimentando o caminho para soluções Enterprise e APIs de baixa latência.</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/PulseDataLabs" target="_blank" class="btn-primary">Acompanhe no GitHub</a>
+                <a href="#produtos" class="btn-secondary">Ver Data Feeds</a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-800/50">
-        <div class="max-w-5xl mx-auto px-6 py-12">
-            <div class="grid md:grid-cols-3 gap-8 mb-10">
-                <div>
-                    <img src="assets/logo-full.png" alt="PulseDataLabs" class="h-8 mb-4">
-                    <p class="text-sm text-slate-500 leading-relaxed">Infraestrutura serverless de dados para o mercado financeiro. Transparência, eficiência e dados abertos.</p>
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <img src="assets/logo-full.png" alt="PulseDataLabs">
+                    <p>Infraestrutura serverless de dados para o mercado financeiro. Transparência, eficiência e dados abertos.</p>
                 </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Produtos</h4>
-                    <ul class="space-y-2 text-sm text-slate-500">
-                        <li><a href="https://github.com/PulseDataLabs/pulseflat" target="_blank" class="hover:text-emerald-400 transition-colors inline-flex items-center gap-1.5">PulseFlat <span class="text-xs text-slate-600">→</span></a></li>
-                        <li><a href="https://github.com/PulseDataLabs/pulseratings" target="_blank" class="hover:text-emerald-400 transition-colors inline-flex items-center gap-1.5">PulseRatings Brasil <span class="text-xs text-slate-600">→</span></a></li>
+                <div class="footer-col">
+                    <h4>Produtos</h4>
+                    <ul>
+                        <li><a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank">PulseFlat</a></li>
+                        <li><a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank">PulseRatings Brasil</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Links</h4>
-                    <ul class="space-y-2 text-sm text-slate-500">
-                        <li><a href="https://github.com/PulseDataLabs" target="_blank" class="hover:text-emerald-400 transition-colors">GitHub</a></li>
-                        <li><a href="https://pulsedatalabs.github.io" class="hover:text-emerald-400 transition-colors">Site</a></li>
-                        <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank" class="hover:text-emerald-400 transition-colors">PulseFlat Site</a></li>
-                        <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank" class="hover:text-emerald-400 transition-colors">PulseRatings Site</a></li>
+                <div class="footer-col">
+                    <h4>Links</h4>
+                    <ul>
+                        <li><a href="https://github.com/PulseDataLabs" target="_blank">GitHub</a></li>
+                        <li><a href="https://pulsedatalabs.github.io">Site</a></li>
+                        <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank">PulseFlat Site</a></li>
+                        <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank">PulseRatings Site</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-slate-800/50 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
-                <p>&copy; 2026 PulseDataLabs. Todos os direitos reservados.</p>
-                <p>Feito com foco na eficiência.</p>
+            <div class="footer-bottom">
+                <span class="footer-copy">&copy; 2026 PulseDataLabs</span>
+                <span class="footer-copy">Dados abertos · Open-source</span>
             </div>
         </div>
     </footer>
