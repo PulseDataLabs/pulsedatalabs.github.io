@@ -36,11 +36,13 @@
     <div class="max-w-5xl mx-auto px-6 py-16">
         
         <!-- Header & Hero Section -->
-        <header class="text-center mb-20">
-            <img src="assets/logo.png" alt="PulseDataLabs Logo" class="w-32 h-32 mx-auto mb-6 rounded-2xl shadow-lg shadow-emerald-500/20">
-            <h1 class="text-5xl font-extrabold text-white mb-4 tracking-tight">
-                Pulse<span class="text-gradient">DataLabs</span>
-            </h1>
+        <header class="text-center mb-20 mt-10">
+            <!-- Usamos o logo completo aqui, ajustando a altura (h-24 ou h-32) para manter a proporção -->
+            <img src="assets/logo-full.png" alt="PulseDataLabs" class="h-24 md:h-32 mx-auto mb-8 drop-shadow-xl">
+            
+            <!-- Título escondido visualmente para não duplicar com o logo, mas presente para SEO -->
+            <h1 class="sr-only">PulseDataLabs</h1>
+            
             <h2 class="text-2xl font-medium text-slate-400 mb-6">Serverless Data Infrastructure for Financial Markets.</h2>
             <p class="max-w-2xl mx-auto text-lg leading-relaxed text-slate-400 mb-8">
                 Construímos infraestrutura de dados moderna e descentralizada para o mercado financeiro global. Automatizamos o pipeline completo de captura, normalização e versionamento de preços, indicadores econômicos e ratings de crédito, entregando dados limpos e prontos para consumo com <strong>zero fricção de infraestrutura</strong>.
