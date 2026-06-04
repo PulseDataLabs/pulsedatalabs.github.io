@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulseDataLabs | Serverless Data Infrastructure</title>
+    <meta name="description" content="Infraestrutura serverless de dados para o mercado financeiro. Coleta, normalização e versionamento de preços, indicadores e ratings.">
+    <!-- Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#0a1128',
+                        emerald: '#10b981',
+                        electric: '#3b82f6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Gradiente inspirado no logotipo */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #10b981, #3b82f6);
+        }
+    </style>
+</head>
+<body class="bg-navy text-slate-300 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Container Principal -->
+    <div class="max-w-5xl mx-auto px-6 py-16">
+        
+        <!-- Header & Hero Section -->
+        <header class="text-center mb-20">
+            <img src="assets/logo.png" alt="PulseDataLabs Logo" class="w-32 h-32 mx-auto mb-6 rounded-2xl shadow-lg shadow-emerald-500/20">
+            <h1 class="text-5xl font-extrabold text-white mb-4 tracking-tight">
+                Pulse<span class="text-gradient">DataLabs</span>
+            </h1>
+            <h2 class="text-2xl font-medium text-slate-400 mb-6">Serverless Data Infrastructure for Financial Markets.</h2>
+            <p class="max-w-2xl mx-auto text-lg leading-relaxed text-slate-400 mb-8">
+                Construímos infraestrutura de dados moderna e descentralizada para o mercado financeiro global. Automatizamos o pipeline completo de captura, normalização e versionamento de preços, indicadores econômicos e ratings de crédito, entregando dados limpos e prontos para consumo com <strong>zero fricção de infraestrutura</strong>.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#produtos" class="px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-semibold hover:opacity-90 transition-opacity">
+                    Explorar Produtos
+                </a>
+                <a href="https://github.com/PulseDataLabs" target="_blank" class="px-6 py-3 rounded-lg bg-slate-800 text-white font-semibold hover:bg-slate-700 transition-colors border border-slate-700">
+                    Ver no GitHub
+                </a>
+            </div>
+        </header>
+
+        <!-- Produtos Section -->
+        <section id="produtos" class="mb-20">
+            <h3 class="text-3xl font-bold text-white mb-8 border-b border-slate-800 pb-4">Nossos Data Feeds</h3>
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <!-- Card PulseFlat -->
+                <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-xl hover:border-emerald-500/50 transition-colors">
+                    <div class="text-emerald-400 mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3">PulseFlat</h4>
+                    <p class="text-slate-400 mb-4">Pipeline ETL serverless que captura diariamente preços de mercado e indicadores financeiros de fontes oficiais (BCB, ANBIMA, B3, CVM, IBGE). Dados abertos e estruturados.</p>
+                    <div class="flex gap-2 text-xs font-mono text-slate-500">
+                        <span class="bg-slate-900 px-2 py-1 rounded">CSV</span>
+                        <span class="bg-slate-900 px-2 py-1 rounded">Daily</span>
+                        <span class="bg-slate-900 px-2 py-1 rounded">Open-Source</span>
+                    </div>
+                </div>
+
+                <!-- Card PulseRatings -->
+                <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-xl hover:border-blue-500/50 transition-colors">
+                    <div class="text-blue-400 mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3">PulseRatings Brasil</h4>
+                    <p class="text-slate-400 mb-4">Monitoramento automatizado e histórico consolidado de ratings de crédito corporativos e soberanos das agências S&P Global, Moody's e Fitch.</p>
+                    <div class="flex gap-2 text-xs font-mono text-slate-500">
+                        <span class="bg-slate-900 px-2 py-1 rounded">CSV</span>
+                        <span class="bg-slate-900 px-2 py-1 rounded">Credit Risk</span>
+                        <span class="bg-slate-900 px-2 py-1 rounded">Market History</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Diferenciais Section -->
+        <section class="mb-20">
+            <h3 class="text-3xl font-bold text-white mb-8 border-b border-slate-800 pb-4">Por que a PulseDataLabs?</h3>
+            <ul class="space-y-6 text-slate-400">
+                <li class="flex items-start">
+                    <span class="text-emerald-500 mr-3 mt-1">✓</span>
+                    <div>
+                        <strong class="text-white block">Dados como Código (Data as Code)</strong>
+                        Armazenamento estável em arquivos planos (flat files) e versionados nativamente via Git, permitindo rastreabilidade e histórico completo do mercado.
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-emerald-500 mr-3 mt-1">✓</span>
+                    <div>
+                        <strong class="text-white block">Arquitetura Serverless Eficiente</strong>
+                        Pipelines acionados por eventos e automações via GitHub Actions. Alta disponibilidade e consistência diária sem custos de servidores ociosos.
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-emerald-500 mr-3 mt-1">✓</span>
+                    <div>
+                        <strong class="text-white block">Pronto para Integração</strong>
+                        Sem APIs complexas na fase inicial. Consuma os CSVs diretamente no seu modelo em Python, Excel, R ou Power BI.
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- O Padrão -->
+        <section class="mb-20 text-center bg-slate-900 p-8 border border-slate-800 rounded-xl shadow-inner">
+            <h3 class="text-xl font-mono text-slate-500 mb-4">O Padrão que Nos Move</h3>
+            <p class="text-lg font-mono text-emerald-400 break-words">
+                Coleta Automatizada ➔ Normalização Rígida ➔ Armazenamento Versionado ➔ Dashboard Público
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 border-t border-slate-800 pt-8 mt-12">
+            <p>&copy; 2026 PulseDataLabs. Todos os direitos reservados.</p>
+            <p class="text-sm mt-2">Começando pelo Brasil, mirando o mercado global.</p>
+        </footer>
+
+    </div>
+</body>
+</html>
