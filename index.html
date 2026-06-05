@@ -1,36 +1,25 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PulseDataLabs — Serverless Data Infrastructure for Financial Markets</title>
-    <meta name="description" content="Infraestrutura serverless de dados para o mercado financeiro. Coleta, normalização e versionamento automatizados de preços, indicadores e ratings." />
+    <title>PulseDataLabs — Financial Data Infrastructure</title>
+    <meta name="description" content="Enterprise-grade financial data infrastructure. Automated collection, normalization and delivery of market prices, economic indicators and credit ratings — at scale." />
 
-    <!-- Open Graph / Social -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://pulsedatalabs.github.io" />
-    <meta property="og:title" content="PulseDataLabs — Serverless Data Infrastructure" />
-    <meta property="og:description" content="Infraestrutura serverless de dados para o mercado financeiro. Dados abertos, versionados e prontos para consumo." />
+    <meta property="og:title" content="PulseDataLabs — Financial Data Infrastructure" />
+    <meta property="og:description" content="Reliable, structured financial data delivered daily to investment firms, banks and fintech teams." />
     <meta property="og:image" content="https://pulsedatalabs.github.io/assets/logo-full.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="PulseDataLabs — Serverless Data Infrastructure" />
-    <meta name="twitter:description" content="Infraestrutura serverless de dados para o mercado financeiro. Dados abertos, versionados e prontos para consumo." />
-    <meta name="twitter:image" content="https://pulsedatalabs.github.io/assets/logo-full.png" />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/logo-full.png" />
-
-    <!-- Canonical -->
     <link rel="canonical" href="https://pulsedatalabs.github.io" />
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" /></noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" />
 
-    <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -38,8 +27,7 @@
         "name": "PulseDataLabs",
         "url": "https://pulsedatalabs.github.io",
         "logo": "https://pulsedatalabs.github.io/assets/logo-full.png",
-        "description": "Infraestrutura serverless de dados para o mercado financeiro.",
-        "sameAs": ["https://github.com/PulseDataLabs"]
+        "description": "Enterprise financial data infrastructure for investment firms, banks and fintech teams."
     }
     </script>
 
@@ -47,23 +35,27 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg:        #080c10;
-            --bg2:       #0d1218;
-            --bg3:       #111820;
-            --surface:   #141c26;
-            --border:    #1e2d3d;
-            --border2:   #243444;
+            --bg:        #060a0e;
+            --bg2:       #0b1118;
+            --bg3:       #101820;
+            --surface:   #131d28;
+            --surface2:  #192636;
+            --border:    #1c2d3e;
+            --border2:   #233548;
             --accent:    #00d4ff;
-            --accent2:   #0095c8;
+            --accent2:   #0088bb;
+            --accent3:   #33e0ff;
             --gold:      #f0b429;
             --green:     #00e5a0;
             --red:       #ff4d6d;
+            --purple:    #a78bfa;
             --text:      #e8eef4;
             --text2:     #8fa3b8;
             --text3:     #4d6070;
             --font-head: 'Syne', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
             --font-body: 'Lora', serif;
+            --radius:    10px;
         }
 
         html { scroll-behavior: smooth; }
@@ -73,1059 +65,1048 @@
             color: var(--text);
             font-family: var(--font-body);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* Noise + grid overlay */
         body::before {
             content: '';
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.6;
+            pointer-events: none; z-index: 0; opacity: 0.5;
         }
 
         body::after {
             content: '';
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background-image:
-                linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+                linear-gradient(rgba(0,212,255,0.018) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,255,0.018) 1px, transparent 1px);
             background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
         }
 
-        /* Accessibility */
         .skip-link {
-            position: absolute;
-            top: -100%;
-            left: 1rem;
-            z-index: 200;
-            padding: 0.75rem 1.5rem;
-            background: var(--accent);
-            color: var(--bg);
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            border-radius: 0 0 4px 4px;
-            text-decoration: none;
-            transition: top 0.2s;
+            position: absolute; top: -100%; left: 1rem; z-index: 200;
+            padding: 0.75rem 1.5rem; background: var(--accent); color: var(--bg);
+            font-family: var(--font-mono); font-size: 0.8rem;
+            border-radius: 0 0 4px 4px; text-decoration: none; transition: top 0.2s;
         }
         .skip-link:focus { top: 0; }
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-        :focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-
-        /* Nav */
+        /* ─── NAV ─── */
         nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
             padding: 1.25rem 3rem;
-            background: rgba(8,12,16,0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(6,10,14,0.88);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
         }
 
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            text-decoration: none;
-        }
+        .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+        .nav-logo-text { font-family: var(--font-head); font-weight: 700; font-size: 1rem; color: var(--text); letter-spacing: -0.02em; }
+        .nav-logo-text span { color: var(--accent); }
 
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            list-style: none;
-        }
-
+        .nav-menu { display: flex; align-items: center; gap: 2rem; list-style: none; }
         .nav-menu a {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--text2);
-            text-decoration: none;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            transition: color 0.2s;
+            font-family: var(--font-mono); font-size: 0.72rem; color: var(--text2);
+            text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s;
         }
-
-        .nav-menu a:hover,
-        .nav-menu a.active { color: var(--accent); }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--accent); }
 
         .nav-cta {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--bg);
-            background: var(--accent);
-            padding: 0.5rem 1.2rem;
-            border-radius: 4px;
-            text-decoration: none;
-            letter-spacing: 0.05em;
-            transition: background 0.2s, transform 0.15s;
+            font-family: var(--font-mono) !important; font-size: 0.72rem !important;
+            font-weight: 500 !important; color: var(--bg) !important;
+            background: var(--accent) !important; padding: 0.45rem 1.1rem;
+            border-radius: 4px; text-decoration: none; letter-spacing: 0.05em; transition: background 0.2s, transform 0.15s;
         }
+        .nav-cta:hover { background: var(--accent3) !important; transform: translateY(-1px); }
 
-        .nav-cta:hover { background: #33ddff; transform: translateY(-1px); }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: var(--text);
-            border-radius: 2px;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-
+        .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.2s, opacity 0.2s; }
         .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-        /* Animations */
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50%       { opacity: 0.4; transform: scale(0.7); }
-        }
+        /* ─── ANIMATIONS ─── */
+        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        @keyframes drift1 { from{transform:translate(0,0)} to{transform:translate(60px,40px)} }
+        @keyframes drift2 { from{transform:translate(0,0)} to{transform:translate(-40px,-60px)} }
+        @keyframes drift3 { from{transform:translate(0,0)} to{transform:translate(30px,-30px)} }
+        @keyframes scroll-ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50%      { transform: translateY(-8px); }
-        }
+        .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-        /* Hero */
+        /* ─── TICKER STRIP ─── */
+        .ticker-strip {
+            position: relative; z-index: 1;
+            background: var(--bg3); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            overflow: hidden; height: 36px; display: flex; align-items: center;
+        }
+        .ticker-track { display: flex; white-space: nowrap; animation: scroll-ticker 32s linear infinite; width: max-content; }
+        .ticker-item { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; padding: 0 2.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .ticker-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.5; }
+        .ticker-item .val { color: var(--accent); }
+        .ticker-item .up { color: var(--green); }
+        .ticker-item .dn { color: var(--red); }
+
+        /* ─── HERO ─── */
         .hero {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 8rem 2rem 6rem;
-            overflow: hidden;
+            position: relative; z-index: 1; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 8rem 2rem 5rem; overflow: hidden;
         }
+        .hero-orb { position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; }
+        .hero-orb-1 { width:600px;height:600px;background:radial-gradient(circle,rgba(0,212,255,.12),transparent 70%);top:-100px;left:-150px;animation:drift1 12s ease-in-out infinite alternate; }
+        .hero-orb-2 { width:500px;height:500px;background:radial-gradient(circle,rgba(240,180,41,.07),transparent 70%);bottom:-80px;right:-100px;animation:drift2 15s ease-in-out infinite alternate; }
+        .hero-orb-3 { width:300px;height:300px;background:radial-gradient(circle,rgba(0,229,160,.06),transparent 70%);top:40%;left:55%;animation:drift3 10s ease-in-out infinite alternate; }
 
-        .hero-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            pointer-events: none;
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent);
+            letter-spacing: 0.18em; text-transform: uppercase;
+            background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.18);
+            padding: 0.35rem 1rem; border-radius: 100px; margin-bottom: 2.5rem;
+            animation: fadeUp 0.7s ease 0.1s both;
         }
-        .hero-orb-1 {
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(0,212,255,0.12), transparent 70%);
-            top: -100px; left: -150px;
-            animation: drift1 12s ease-in-out infinite alternate;
-        }
-        .hero-orb-2 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(240,180,41,0.08), transparent 70%);
-            bottom: -80px; right: -100px;
-            animation: drift2 15s ease-in-out infinite alternate;
-        }
-        .hero-orb-3 {
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(0,229,160,0.06), transparent 70%);
-            top: 40%; left: 55%;
-            animation: drift3 10s ease-in-out infinite alternate;
-        }
+        .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse-dot 1.5s ease-in-out infinite; }
 
-        @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px, 40px); } }
-        @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-40px, -60px); } }
-        @keyframes drift3 { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
-
-        .ticker-bar {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text3);
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            margin-bottom: 2.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .ticker-bar::before, .ticker-bar::after {
-            content: '';
-            width: 40px; height: 1px;
-            background: var(--border2);
-        }
-
-        .status-dot {
-            display: inline-block;
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green);
-            animation: pulse-dot 1.5s ease-in-out infinite;
-            margin-right: 0.3rem;
-        }
+        .hero-logo { margin-bottom: 1.8rem; animation: float 6s ease-in-out infinite; }
 
         .hero-title {
-            font-family: var(--font-head);
-            font-weight: 800;
-            font-size: clamp(3rem, 8vw, 6rem);
-            line-height: 1.15;
-            letter-spacing: -0.03em;
-            margin-bottom: 0.4rem;
+            font-family: var(--font-head); font-weight: 800;
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 0.5rem;
+            animation: fadeUp 0.7s ease 0.3s both;
         }
-
-        .hero-title .line-accent {
-            color: transparent;
-            -webkit-text-stroke: 1.5px var(--accent);
-        }
-
-        .hero-title .line-solid {
-            color: var(--text);
-        }
+        .hero-title .accent { color: var(--accent); }
+        .hero-title .stroke { color: transparent; -webkit-text-stroke: 1.5px var(--accent); }
 
         .hero-subtitle {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: var(--accent);
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
+            font-family: var(--font-mono); font-size: 0.75rem; color: var(--text3);
+            letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 1.8rem;
+            animation: fadeUp 0.7s ease 0.4s both;
         }
 
         .hero-description {
-            max-width: 580px;
-            font-size: 1rem;
-            line-height: 1.75;
-            color: var(--text2);
-            margin-bottom: 2.5rem;
+            max-width: 620px; font-size: 1.05rem; line-height: 1.8; color: var(--text2);
+            margin-bottom: 2.5rem; animation: fadeUp 0.7s ease 0.5s both;
         }
+        .hero-description strong { color: var(--text); font-style: normal; font-weight: 500; }
 
-        .hero-ctas {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+        .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.7s ease 0.6s both; }
 
         .btn-primary {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--bg);
-            background: var(--accent);
-            padding: 0.9rem 2rem;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 0 30px rgba(0,212,255,0.2);
+            font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500;
+            letter-spacing: 0.06em; text-transform: uppercase; color: var(--bg);
+            background: var(--accent); padding: 0.85rem 2rem; border-radius: 4px;
+            text-decoration: none; transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 0 28px rgba(0,212,255,0.2);
         }
-
-        .btn-primary:hover {
-            background: #33ddff;
-            transform: translateY(-2px);
-            box-shadow: 0 0 50px rgba(0,212,255,0.35);
-        }
+        .btn-primary:hover { background: var(--accent3); transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,212,255,0.35); }
 
         .btn-secondary {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text2);
-            background: transparent;
-            padding: 0.9rem 2rem;
-            border-radius: 4px;
-            border: 1px solid var(--border2);
-            text-decoration: none;
+            font-family: var(--font-mono); font-size: 0.78rem; font-weight: 400;
+            letter-spacing: 0.06em; text-transform: uppercase; color: var(--text2);
+            background: transparent; padding: 0.85rem 2rem; border-radius: 4px;
+            border: 1px solid var(--border2); text-decoration: none;
             transition: border-color 0.2s, color 0.2s, transform 0.15s;
         }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
-        .btn-secondary:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .hero-stats {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            gap: 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            background: var(--bg2);
-        }
-
-        .stat-item {
-            flex: 1;
-            padding: 1.5rem 2rem;
-            border-right: 1px solid var(--border);
-            text-align: center;
-            position: relative;
-        }
-
+        /* ─── STATS BAR ─── */
+        .stats-bar { position: relative; z-index: 1; display: flex; background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .stat-item { flex: 1; padding: 1.6rem 2rem; border-right: 1px solid var(--border); text-align: center; position: relative; }
         .stat-item:last-child { border-right: none; }
-
-        .stat-item::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
+        .stat-item::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:0; transition:opacity 0.3s; }
         .stat-item:hover::before { opacity: 1; }
+        .stat-value { font-family: var(--font-head); font-weight: 800; font-size: 1.9rem; color: var(--text); letter-spacing: -0.03em; display: block; }
+        .stat-value span { color: var(--accent); }
+        .stat-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; display: block; }
 
-        .stat-value {
-            font-family: var(--font-head);
-            font-weight: 800;
-            font-size: 1.8rem;
-            color: var(--text);
-            letter-spacing: -0.03em;
-        }
-
-        .stat-label {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            color: var(--text3);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 0.3rem;
-        }
-
-        /* Sections */
-        section {
-            position: relative;
-            z-index: 1;
-        }
-
-        .container {
-            max-width: 1160px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section-pad {
-            padding: 8rem 0;
-        }
-
+        /* ─── LAYOUT ─── */
+        section { position: relative; z-index: 1; }
+        .container { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+        .section-pad { padding: 7rem 0; }
         .section-label {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--accent);
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+            font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent);
+            letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.75rem;
         }
+        .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+        .section-title { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.8rem,4vw,2.7rem); letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
+        .section-desc { color: var(--text2); font-size: 1rem; line-height: 1.75; max-width: 560px; }
+        .alt-bg { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .section-title {
-            font-family: var(--font-head);
-            font-weight: 700;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-        }
-
-        .section-desc {
-            color: var(--text2);
-            font-size: 1rem;
-            line-height: 1.75;
-            max-width: 560px;
-        }
-
-        .alt-bg {
-            background: var(--bg2);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        /* Product cards */
-        .product-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .card {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: background 0.25s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover { background: var(--surface); }
-
-        .card-accent {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
+        /* ─── PRODUCT CARDS ─── */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+        .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: background 0.25s, border-color 0.25s; position: relative; overflow: hidden; }
+        .card:hover { background: var(--surface); border-color: var(--border2); }
+        .card-accent { position: absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg,transparent,var(--accent),transparent); opacity:0; transition:opacity 0.3s; }
         .card:hover .card-accent { opacity: 1; }
-
-        .product-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .product-header img {
-            height: 2rem;
-            width: auto;
-        }
-
-        .product-name {
-            font-family: var(--font-head);
-            font-weight: 700;
-            font-size: 1.05rem;
-            letter-spacing: -0.01em;
-        }
-
-        .product-tag {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            color: var(--text3);
-        }
-
-        .product-desc {
-            font-size: 0.88rem;
-            line-height: 1.65;
-            color: var(--text2);
-            margin-bottom: 1.5rem;
-        }
-
-        .pill-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .pill {
-            font-family: var(--font-mono);
-            font-size: 0.6rem;
-            padding: 0.25rem 0.6rem;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            color: var(--text3);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .link-row {
-            display: flex;
-            gap: 1.5rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .link-row a {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text3);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: color 0.2s;
-            letter-spacing: 0.04em;
-        }
-
+        .product-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+        .product-icon { width:44px; height:44px; border-radius:10px; background:var(--bg3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+        .product-name { font-family: var(--font-head); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; }
+        .product-tag { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.05em; }
+        .product-desc { font-size: 0.88rem; line-height: 1.7; color: var(--text2); margin-bottom: 1.5rem; }
+        .pill-group { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+        .pill { font-family: var(--font-mono); font-size: 0.58rem; padding: 0.22rem 0.55rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 3px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+        .link-row { display: flex; gap: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+        .link-row a { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: color 0.2s; letter-spacing: 0.04em; }
         .link-row a:hover { color: var(--accent); }
+        .link-row svg { width:12px; height:12px; flex-shrink:0; }
 
-        .link-row svg {
-            width: 12px; height: 12px;
-            flex-shrink: 0;
-        }
+        /* ─── DATA SOURCES ─── */
+        .sources-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 3rem; }
+        .source-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1rem; text-align: center; transition: all 0.25s; cursor: default; }
+        .source-card:hover { background: var(--surface2); border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,212,255,0.1); }
+        .source-abbr { font-family: var(--font-head); font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; color: var(--accent); margin-bottom: 0.4rem; }
+        .source-name { font-family: var(--font-mono); font-size: 0.58rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.5; margin-bottom: 0.8rem; }
+        .source-examples { display: flex; flex-direction: column; gap: 0.25rem; }
+        .source-example { font-family: var(--font-mono); font-size: 0.55rem; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); border-radius: 3px; padding: 0.15rem 0.4rem; text-align: left; }
 
-        /* Features */
-        .features-grid {
+        /* ─── PIPELINE STEPS ─── */
+        .pipeline-wrapper { margin-top: 3.5rem; position: relative; }
+        .pipeline-line { position: absolute; top: 28px; left: calc(12.5% + 22px); right: calc(12.5% + 22px); height: 1px; background: linear-gradient(90deg,var(--border),var(--accent),var(--border)); z-index: 0; }
+        .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; position: relative; z-index: 1; }
+        .step-item { text-align: center; }
+        .step-num { font-family: var(--font-mono); font-size: 0.55rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .step-icon-box { width:56px; height:56px; border-radius:12px; background:var(--surface); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.4rem; transition:all 0.25s; }
+        .step-item:hover .step-icon-box { background: rgba(0,212,255,0.1); border-color: var(--accent); box-shadow: 0 0 24px rgba(0,212,255,0.25); }
+        .step-title { font-family: var(--font-head); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; }
+        .step-desc { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); line-height: 1.65; }
+
+        /* ─── AUDIENCE ─── */
+        .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+        .audience-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: all 0.25s; }
+        .audience-card:hover { background: var(--surface2); border-color: var(--border2); }
+        .audience-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+        .audience-title { font-family: var(--font-head); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.6rem; }
+        .audience-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.7; margin-bottom: 1rem; }
+        .audience-uses { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+        .audience-uses li { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); display: flex; align-items: flex-start; gap: 0.5rem; }
+        .audience-uses li::before { content: '›'; color: var(--accent); flex-shrink: 0; }
+
+        /* ─── FEATURES ─── */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+        .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: background 0.25s; }
+        .feature-card:hover { background: var(--surface2); }
+        .feature-icon { width:42px; height:42px; border-radius:8px; background:var(--bg3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; margin-bottom:1.25rem; }
+        .feature-icon svg { width:18px; height:18px; color:var(--accent); }
+        .feature-title { font-family:var(--font-head); font-weight:600; font-size:.95rem; margin-bottom:.6rem; }
+        .feature-desc { font-size:.85rem; line-height:1.7; color:var(--text2); }
+
+        /* ─── PRICING ─── */
+        .pricing-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
             margin-top: 3rem;
+            align-items: start;
         }
 
-        .feature-card {
+        .pricing-card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 2rem;
-            transition: background 0.25s;
+            border-radius: var(--radius);
+            padding: 2.5rem 2rem;
+            position: relative;
+            transition: transform 0.25s, box-shadow 0.25s;
         }
 
-        .feature-card:hover { background: var(--bg2); }
-
-        .feature-icon {
-            width: 40px; height: 40px;
-            border-radius: 8px;
-            background: var(--bg3);
-            border: 1px solid var(--border2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.25rem;
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4);
         }
 
-        .feature-icon svg {
-            width: 18px; height: 18px;
+        .pricing-card.featured {
+            background: var(--surface2);
+            border-color: var(--accent);
+            box-shadow: 0 0 40px rgba(0,212,255,0.12);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px; left: 50%; transform: translateX(-50%);
+            font-family: var(--font-mono); font-size: 0.58rem;
+            color: var(--bg); background: var(--accent);
+            padding: 0.25rem 0.9rem; border-radius: 100px;
+            letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap;
+        }
+
+        .pricing-tier {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
             color: var(--accent);
-        }
-
-        .feature-title {
-            font-family: var(--font-head);
-            font-weight: 600;
-            font-size: 0.95rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
             margin-bottom: 0.75rem;
         }
 
-        .feature-desc {
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: var(--text2);
-        }
-
-        /* Steps */
-        .steps-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .step-item {
-            text-align: center;
-        }
-
-        .step-icon-box {
-            width: 44px; height: 44px;
-            border-radius: 10px;
-            background: var(--surface);
-            border: 1px solid var(--border2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.1rem;
-            transition: all 0.25s;
-        }
-
-        .step-item:hover .step-icon-box {
-            background: var(--accent);
-            color: var(--bg);
-            box-shadow: 0 0 20px rgba(0,212,255,0.4);
-        }
-
-        .step-title {
+        .pricing-name {
             font-family: var(--font-head);
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 0.4rem;
-        }
-
-        .step-desc {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text3);
-            line-height: 1.6;
-        }
-
-        /* CTA */
-        .cta-section {
-            padding: 8rem 0;
-            text-align: center;
-        }
-
-        .cta-section h2 {
-            font-family: var(--font-head);
-            font-weight: 700;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            color: var(--text2);
-            font-size: 1rem;
-            line-height: 1.75;
-            max-width: 520px;
-            margin: 0 auto 2.5rem;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        /* Footer */
-        footer {
-            position: relative;
-            z-index: 1;
-            border-top: 1px solid var(--border);
-            padding: 3rem 0;
-            background: var(--bg);
-        }
-
-        .footer-inner {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-
-        .footer-brand {
-            max-width: 280px;
-        }
-
-        .footer-brand img {
-            height: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-brand p {
-            font-family: var(--font-mono);
-            font-size: 0.68rem;
-            color: var(--text3);
-            line-height: 1.6;
-        }
-
-        .footer-col h4 {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            color: var(--text2);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col li {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
             margin-bottom: 0.5rem;
         }
 
-        .footer-col a {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text3);
-            text-decoration: none;
-            transition: color 0.2s;
+        .pricing-desc {
+            font-size: 0.82rem;
+            color: var(--text2);
+            line-height: 1.65;
+            margin-bottom: 2rem;
+            min-height: 3.5rem;
         }
 
-        .footer-col a:hover { color: var(--accent); }
-
-        .footer-bottom {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
+        .pricing-price {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
+            align-items: flex-end;
+            gap: 0.3rem;
+            margin-bottom: 0.4rem;
         }
 
-        .footer-copy {
+        .price-amount {
+            font-family: var(--font-head);
+            font-weight: 800;
+            font-size: 2.8rem;
+            letter-spacing: -0.04em;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .price-currency {
             font-family: var(--font-mono);
-            font-size: 0.65rem;
+            font-size: 1rem;
             color: var(--text3);
+            margin-bottom: 0.4rem;
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
+        .price-period {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text3);
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.04em;
+        }
+
+        .price-note {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--text3);
+            margin-bottom: 2rem;
+            min-height: 1.2rem;
+        }
+
+        .pricing-divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 1.75rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text2);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            line-height: 1.5;
+        }
+
+        .pricing-features li .check {
+            color: var(--green);
+            flex-shrink: 0;
+            font-size: 0.7rem;
+            margin-top: 0.1rem;
+        }
+
+        .pricing-features li .minus {
+            color: var(--text3);
+            flex-shrink: 0;
+        }
+
+        .pricing-features li.dim { color: var(--text3); }
+
+        .btn-plan {
+            display: block;
+            width: 100%;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 0.85rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-plan-outline {
+            color: var(--text2);
+            border: 1px solid var(--border2);
+            background: transparent;
+        }
+        .btn-plan-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+        .btn-plan-filled {
+            color: var(--bg);
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 24px rgba(0,212,255,0.25);
+        }
+        .btn-plan-filled:hover { background: var(--accent3); box-shadow: 0 0 40px rgba(0,212,255,0.4); }
+
+        .btn-plan-ghost {
+            color: var(--text3);
+            border: 1px solid var(--border);
+            background: transparent;
+        }
+        .btn-plan-ghost:hover { border-color: var(--text2); color: var(--text2); }
+
+        .pricing-note {
+            text-align: center;
+            margin-top: 2.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text3);
+            line-height: 1.8;
+        }
+        .pricing-note a { color: var(--accent); text-decoration: none; }
+        .pricing-note a:hover { text-decoration: underline; }
+
+        /* ─── CTA ─── */
+        .cta-section { padding: 7rem 0; text-align: center; }
+        .cta-section h2 { font-family:var(--font-head); font-weight:700; font-size:clamp(1.8rem,4vw,2.7rem); letter-spacing:-.03em; line-height:1.1; margin-bottom:1rem; }
+        .cta-section p { color:var(--text2); font-size:1rem; line-height:1.75; max-width:520px; margin:0 auto 2.5rem; }
+        .cta-buttons { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+
+        /* ─── FOOTER ─── */
+        footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:3.5rem 0 2rem; background:var(--bg); }
+        .footer-inner { display:grid; grid-template-columns:2fr 1fr 1fr; gap:3rem; margin-bottom:2.5rem; }
+        .footer-brand p { font-size:0.82rem; color:var(--text3); line-height:1.7; max-width:280px; margin-top:0.75rem; }
+        .footer-col h4 { font-family:var(--font-mono); font-size:0.62rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--text2); margin-bottom:1rem; }
+        .footer-col ul { list-style:none; }
+        .footer-col li { margin-bottom:0.55rem; }
+        .footer-col a { font-family:var(--font-mono); font-size:0.7rem; color:var(--text3); text-decoration:none; transition:color 0.2s; }
+        .footer-col a:hover { color:var(--accent); }
+        .footer-bottom { padding-top:2rem; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+        .footer-copy { font-family:var(--font-mono); font-size:.62rem; color:var(--text3); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 960px) {
             nav { padding: 1rem 1.5rem; }
             .hamburger { display: flex; }
-            .nav-menu {
-                display: none;
-                position: absolute;
-                top: 100%; left: 0; right: 0;
-                flex-direction: column;
-                gap: 0;
-                background: var(--bg);
-                border-bottom: 1px solid var(--border);
-                padding: 1rem 0;
-            }
+            .nav-menu { display:none; position:absolute; top:100%; left:0; right:0; flex-direction:column; gap:0; background:var(--bg); border-bottom:1px solid var(--border); padding:1rem 0; }
             .nav-menu.open { display: flex; }
-            .nav-menu a {
-                padding: 0.75rem 1.5rem;
-                width: 100%;
-            }
-            .nav-menu .nav-cta {
-                margin: 0.75rem 1.5rem;
-                text-align: center;
-            }
-            .product-grid,
-            .features-grid { grid-template-columns: 1fr; }
+            .nav-menu a { padding: 0.75rem 1.5rem; width: 100%; }
+            .nav-menu .nav-cta { margin: 0.75rem 1.5rem; text-align: center; display: block; }
+            .product-grid, .features-grid, .audience-grid, .pricing-grid { grid-template-columns: 1fr; }
+            .sources-grid { grid-template-columns: repeat(3, 1fr); }
             .steps-grid { grid-template-columns: 1fr 1fr; }
-            .hero-stats { flex-wrap: wrap; }
+            .pipeline-line { display: none; }
+            .stats-bar { flex-wrap: wrap; }
             .stat-item { min-width: 50%; border-right: none; border-bottom: 1px solid var(--border); }
+            .footer-inner { grid-template-columns: 1fr 1fr; }
         }
-
         @media (max-width: 600px) {
-            .hero-title { font-size: 2.5rem; }
+            .hero-title { font-size: 2.6rem; }
             .container { padding: 0 1.25rem; }
             .hero { padding: 7rem 1.25rem 4rem; }
             .stat-item { min-width: 100%; }
             .steps-grid { grid-template-columns: 1fr; }
+            .sources-grid { grid-template-columns: 1fr 1fr; }
+            .footer-inner { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Skip link -->
-    <a href="#main" class="skip-link">Pular para o conteúdo</a>
+<a href="#main" class="skip-link">Skip to content</a>
 
-    <!-- NAV -->
-    <nav aria-label="Navegação principal">
-        <a href="#" class="nav-logo" aria-label="PulseDataLabs — início">
-            <img src="assets/logo-full.png" alt="PulseDataLabs" style="height: 20px;">
-        </a>
+<!-- ─── NAV ─── -->
+<nav aria-label="Main navigation">
+    <a href="#" class="nav-logo" aria-label="PulseDataLabs — home">
+        <img src="assets/logo-full.png" alt="PulseDataLabs" style="height:22px;" onerror="this.style.display='none'">
+        <span class="nav-logo-text">Pulse<span>Data</span>Labs</span>
+    </a>
 
-        <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+    <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
 
-        <ul class="nav-menu" id="nav-menu" role="list" aria-label="Menu de navegação">
-            <li><a href="#produtos">Produtos</a></li>
-            <li><a href="#diferenciais">Diferenciais</a></li>
-            <li><a href="#como-funciona">Como funciona</a></li>
-            <li><a href="https://github.com/PulseDataLabs" target="_blank" class="nav-cta" aria-label="GitHub (abre em nova aba)">GitHub ↗</a></li>
-        </ul>
-    </nav>
+    <ul class="nav-menu" id="nav-menu" role="list" aria-label="Navigation menu">
+        <li><a href="#produtos">Products</a></li>
+        <li><a href="#fontes">Coverage</a></li>
+        <li><a href="#como-funciona">Pipeline</a></li>
+        <li><a href="#precos">Pricing</a></li>
+        <li><a href="mailto:contact@pulsedatalabs.com" class="nav-cta">Contact Sales ↗</a></li>
+    </ul>
+</nav>
 
-    <!-- HERO -->
-    <section class="hero" id="main">
-        <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
-        <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
-        <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
+<!-- ─── HERO ─── -->
+<section class="hero" id="main">
+    <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
 
-        <div style="margin-bottom: 2rem; animation: float 6s ease-in-out infinite;" aria-hidden="true">
-            <img src="assets/logo-full.png" alt="" style="height: 100px;">
-        </div>
-
-        <div class="ticker-bar" aria-hidden="true">
-            <span class="status-dot" aria-hidden="true"></span>
-            Serverless Data Infrastructure
-        </div>
-
-        <h1 class="hero-title">
-            <span class="line-solid">Pulse</span><br>
-            <span class="line-accent">Data</span><br>
-            <span class="line-solid">Labs</span>
-        </h1>
-
-        <p class="hero-subtitle">Dados financeiros sem complexidade</p>
-
-        <p class="hero-description">
-            Infraestrutura serverless de dados para o mercado financeiro.
-            Captura, normalização e versionamento automatizados de preços,
-            indicadores econômicos e ratings de crédito — tudo open-source.
-        </p>
-
-        <div class="hero-ctas">
-            <a href="#produtos" class="btn-primary">Explorar Produtos</a>
-            <a href="https://github.com/PulseDataLabs" target="_blank" class="btn-secondary" aria-label="Ver no GitHub (abre em nova aba)">Ver no GitHub</a>
-        </div>
-    </section>
-
-    <!-- STATS -->
-    <div class="hero-stats" role="region" aria-label="Estatísticas">
-        <div class="stat-item">
-            <span class="stat-value">2</span>
-            <span class="stat-label">Data Feeds</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value">5+</span>
-            <span class="stat-label">Fontes de dados</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value">100%</span>
-            <span class="stat-label">Open Data</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value">Zero</span>
-            <span class="stat-label">Custo de infra</span>
-        </div>
+    <div class="hero-badge">
+        <span class="status-dot" aria-hidden="true"></span>
+        Live pipelines · Daily delivery
     </div>
 
-    <!-- PRODUTOS -->
-    <section id="produtos" class="section-pad" aria-label="Produtos">
-        <div class="container">
-            <div class="section-label">Data Feeds</div>
-            <h2 class="section-title">Nossos Produtos</h2>
-            <p class="section-desc">Pipelines de dados prontos para consumo. Dados abertos, versionados e atualizados diariamente.</p>
+    <div class="hero-logo" aria-hidden="true">
+        <img src="assets/logo-full.png" alt="" style="height:90px;" onerror="this.style.display='none'">
+    </div>
 
-            <div class="product-grid">
-                <div class="card">
-                    <div class="card-accent" aria-hidden="true"></div>
-                    <div class="product-header">
-                        <img src="assets/pulseflat-logo.png" alt="PulseFlat logo">
-                        <div>
-                            <div class="product-name">PulseFlat</div>
-                            <div class="product-tag">Pipeline ETL Serverless</div>
-                        </div>
-                    </div>
-                    <p class="product-desc">
-                        Captura diária de preços de mercado e indicadores financeiros de fontes oficiais (BCB, ANBIMA, B3, CVM, IBGE). Dados abertos e estruturados em CSV.
-                    </p>
-                    <div class="pill-group">
-                        <span class="pill">CSV</span>
-                        <span class="pill">Daily</span>
-                        <span class="pill">Open-Source</span>
-                    </div>
-                    <div class="link-row">
-                        <a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank" aria-label="PulseFlat no GitHub (abre em nova aba)">
-                            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                            GitHub
-                        </a>
-                        <a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank" aria-label="Site do PulseFlat (abre em nova aba)">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            Site
-                        </a>
+    <h1 class="hero-title">
+        <span>Financial data</span><br>
+        <span class="accent">infrastructure</span><br>
+        <span class="stroke">at scale</span>
+    </h1>
+
+    <p class="hero-subtitle">Reliable · Structured · Enterprise-ready</p>
+
+    <p class="hero-description">
+        PulseDataLabs delivers <strong>institutional-grade financial data</strong> to investment firms, banks and fintech teams.
+        Automated collection, normalization and daily delivery of market prices,
+        economic indicators and credit ratings — from the most trusted official sources.
+    </p>
+
+    <div class="hero-ctas">
+        <a href="#produtos" class="btn-primary">Explore Products</a>
+        <a href="#precos" class="btn-secondary">View Pricing</a>
+    </div>
+</section>
+
+<!-- ─── TICKER STRIP ─── -->
+<div class="ticker-strip" aria-hidden="true">
+    <div class="ticker-track">
+        <span class="ticker-item"><span class="dot"></span>SELIC <span class="val">10.50%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IPCA 12m <span class="val">4.62%</span></span>
+        <span class="ticker-item"><span class="dot"></span>USD/BRL <span class="val">5.12</span> <span class="up">▲ 0.3%</span></span>
+        <span class="ticker-item"><span class="dot"></span>CDI <span class="val">10.40%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IBOVESPA <span class="val">128,450</span> <span class="up">▲ 1.1%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IMA-B <span class="val">3,842.10</span></span>
+        <span class="ticker-item"><span class="dot"></span>GDP 2024 <span class="val">+3.4%</span></span>
+        <span class="ticker-item"><span class="dot"></span>NTN-B 2035 <span class="val">IPCA+6.1%</span></span>
+        <span class="ticker-item"><span class="dot"></span>PTAX <span class="val">5.1032</span></span>
+        <span class="ticker-item"><span class="dot"></span>IGP-M 12m <span class="val">5.81%</span></span>
+        <span class="ticker-item"><span class="dot"></span>SELIC <span class="val">10.50%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IPCA 12m <span class="val">4.62%</span></span>
+        <span class="ticker-item"><span class="dot"></span>USD/BRL <span class="val">5.12</span> <span class="up">▲ 0.3%</span></span>
+        <span class="ticker-item"><span class="dot"></span>CDI <span class="val">10.40%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IBOVESPA <span class="val">128,450</span> <span class="up">▲ 1.1%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IMA-B <span class="val">3,842.10</span></span>
+        <span class="ticker-item"><span class="dot"></span>GDP 2024 <span class="val">+3.4%</span></span>
+        <span class="ticker-item"><span class="dot"></span>NTN-B 2035 <span class="val">IPCA+6.1%</span></span>
+        <span class="ticker-item"><span class="dot"></span>PTAX <span class="val">5.1032</span></span>
+        <span class="ticker-item"><span class="dot"></span>IGP-M 12m <span class="val">5.81%</span></span>
+    </div>
+</div>
+
+<!-- ─── STATS BAR ─── -->
+<div class="stats-bar" role="region" aria-label="Key metrics">
+    <div class="stat-item">
+        <span class="stat-value">2</span>
+        <span class="stat-label">Data Feeds</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-value">5<span>+</span></span>
+        <span class="stat-label">Official Sources</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-value">20<span>+</span></span>
+        <span class="stat-label">Active Scrapers</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-value">99<span>%</span></span>
+        <span class="stat-label">Uptime SLA</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-value">Daily</span>
+        <span class="stat-label">Delivery Cadence</span>
+    </div>
+</div>
+
+<!-- ─── PRODUTOS ─── -->
+<section id="produtos" class="section-pad" aria-label="Products">
+    <div class="container">
+        <div class="section-label fade-up">Data Feeds</div>
+        <h2 class="section-title fade-up">Our Products</h2>
+        <p class="section-desc fade-up">Structured, reliable data pipelines built for institutional consumption — normalized, versioned and delivered daily.</p>
+
+        <div class="product-grid">
+            <div class="card fade-up">
+                <div class="card-accent" aria-hidden="true"></div>
+                <div class="product-header">
+                    <div class="product-icon">📈</div>
+                    <div>
+                        <div class="product-name">PulseFlat</div>
+                        <div class="product-tag">Market Data Pipeline · BCB · ANBIMA · B3 · CVM · IBGE</div>
                     </div>
                 </div>
+                <p class="product-desc">
+                    Daily automated collection of market prices, macroeconomic indicators, interest rates, FX, investment funds and more — sourced directly from official market authorities. Structured, normalized data delivered as clean CSV, ready for immediate integration.
+                </p>
+                <div class="pill-group">
+                    <span class="pill">CSV</span>
+                    <span class="pill">Daily</span>
+                    <span class="pill">Versioned</span>
+                    <span class="pill">Python</span>
+                    <span class="pill">REST-ready</span>
+                </div>
+                <div class="link-row">
+                    <a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank" aria-label="PulseFlat on GitHub">
+                        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                    <a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Documentation
+                    </a>
+                </div>
+            </div>
 
-                <div class="card">
-                    <div class="card-accent" aria-hidden="true"></div>
-                    <div class="product-header">
-                        <img src="assets/pulseratings-logo.png" alt="PulseRatings Brasil logo">
-                        <div>
-                            <div class="product-name">PulseRatings Brasil</div>
-                            <div class="product-tag">Credit Risk Monitoring</div>
-                        </div>
+            <div class="card fade-up" style="transition-delay:.1s">
+                <div class="card-accent" aria-hidden="true"></div>
+                <div class="product-header">
+                    <div class="product-icon">🏦</div>
+                    <div>
+                        <div class="product-name">PulseRatings</div>
+                        <div class="product-tag">Credit Risk Intelligence · S&P · Moody's · Fitch</div>
                     </div>
-                    <p class="product-desc">
-                        Monitoramento automatizado e histórico consolidado de ratings de crédito corporativos e soberanos das agências S&P Global, Moody's e Fitch.
-                    </p>
-                    <div class="pill-group">
-                        <span class="pill">CSV</span>
-                        <span class="pill">Credit Risk</span>
-                        <span class="pill">Market History</span>
-                    </div>
-                    <div class="link-row">
-                        <a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank" aria-label="PulseRatings Brasil no GitHub (abre em nova aba)">
-                            <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                            GitHub
-                        </a>
-                        <a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank" aria-label="Site do PulseRatings Brasil (abre em nova aba)">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            Site
-                        </a>
-                    </div>
+                </div>
+                <p class="product-desc">
+                    Automated monitoring and consolidated historical record of corporate and sovereign credit ratings from the world's three major agencies. Track upgrades, downgrades and watchlist changes in a single structured dataset, updated daily.
+                </p>
+                <div class="pill-group">
+                    <span class="pill">CSV</span>
+                    <span class="pill">Credit Risk</span>
+                    <span class="pill">S&P Global</span>
+                    <span class="pill">Moody's</span>
+                    <span class="pill">Fitch</span>
+                </div>
+                <div class="link-row">
+                    <a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank" aria-label="PulseRatings on GitHub">
+                        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                    <a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Documentation
+                    </a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- DIFERENCIAIS -->
-    <section id="diferenciais" class="section-pad alt-bg" aria-label="Diferenciais">
-        <div class="container">
-            <div class="section-label">Diferenciais</div>
-            <h2 class="section-title">Por que a PulseDataLabs?</h2>
-            <p class="section-desc">Engenharia de dados pensada para escala, transparência e simplicidade.</p>
+<!-- ─── FONTES DE DADOS ─── -->
+<section id="fontes" class="section-pad alt-bg" aria-label="Data coverage">
+    <div class="container">
+        <div class="section-label fade-up">Coverage</div>
+        <h2 class="section-title fade-up">Primary Official Sources</h2>
+        <p class="section-desc fade-up">Data collected directly from primary sources — the same authorities trusted by the largest investment firms and financial institutions.</p>
 
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
-                    </div>
-                    <div class="feature-title">Dados como Código</div>
-                    <p class="feature-desc">Armazenamento em arquivos planos versionados via Git, garantindo rastreabilidade e histórico completo do mercado.</p>
+        <div class="sources-grid">
+            <div class="source-card fade-up">
+                <div class="source-abbr">BCB</div>
+                <div class="source-name">Central Bank of Brazil</div>
+                <div class="source-examples">
+                    <span class="source-example">PTAX · FX rates</span>
+                    <span class="source-example">SGS time series</span>
+                    <span class="source-example">SELIC · CDI</span>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-                    </div>
-                    <div class="feature-title">Arquitetura Serverless</div>
-                    <p class="feature-desc">Pipelines acionados por eventos via GitHub Actions. Alta disponibilidade sem custos de servidores ociosos.</p>
+            </div>
+            <div class="source-card fade-up" style="transition-delay:.05s">
+                <div class="source-abbr">ANBIMA</div>
+                <div class="source-name">Brazilian Capital Markets Assoc.</div>
+                <div class="source-examples">
+                    <span class="source-example">Market indicators</span>
+                    <span class="source-example">IMA · IDA · IHF</span>
+                    <span class="source-example">Public bonds</span>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-                    </div>
-                    <div class="feature-title">Pronto para Integração</div>
-                    <p class="feature-desc">Consuma os CSVs diretamente no seu modelo em Python, Excel, R ou Power BI. Sem APIs complexas.</p>
+            </div>
+            <div class="source-card fade-up" style="transition-delay:.1s">
+                <div class="source-abbr">B3</div>
+                <div class="source-name">Brazilian Stock Exchange</div>
+                <div class="source-examples">
+                    <span class="source-example">REITs · ETFs</span>
+                    <span class="source-example">Futures settlement</span>
+                    <span class="source-example">BM&F rates</span>
+                </div>
+            </div>
+            <div class="source-card fade-up" style="transition-delay:.15s">
+                <div class="source-abbr">CVM</div>
+                <div class="source-name">Securities & Exchange Commission</div>
+                <div class="source-examples">
+                    <span class="source-example">Fund registry</span>
+                    <span class="source-example">Daily reports</span>
+                    <span class="source-example">Regulatory data</span>
+                </div>
+            </div>
+            <div class="source-card fade-up" style="transition-delay:.2s">
+                <div class="source-abbr">IBGE</div>
+                <div class="source-name">National Statistics Institute</div>
+                <div class="source-examples">
+                    <span class="source-example">IPCA · INPC</span>
+                    <span class="source-example">GDP · SIDRA</span>
+                    <span class="source-example">Macro indicators</span>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- COMO FUNCIONA -->
-    <section id="como-funciona" class="section-pad" aria-label="Como funciona">
-        <div class="container">
-            <div class="section-label">Pipeline</div>
-            <h2 class="section-title">Como funciona</h2>
-            <p class="section-desc">Dados atualizados automaticamente todos os dias úteis, do agendamento ao consumo.</p>
+<!-- ─── PARA QUEM É ─── -->
+<section id="audiencia" class="section-pad" aria-label="Who it's for">
+    <div class="container">
+        <div class="section-label fade-up">Clients</div>
+        <h2 class="section-title fade-up">Built for financial professionals</h2>
+        <p class="section-desc fade-up">From quant teams at hedge funds to data engineers at fintechs — PulseDataLabs powers critical workflows across the financial industry.</p>
 
+        <div class="audience-grid">
+            <div class="audience-card fade-up">
+                <div class="audience-icon">🏛️</div>
+                <div class="audience-title">Investment Firms & Banks</div>
+                <p class="audience-desc">Reliable, structured data to power portfolio management, risk systems and compliance reporting.</p>
+                <ul class="audience-uses">
+                    <li>Credit risk monitoring with full rating history</li>
+                    <li>Daily macro indicators for risk models</li>
+                    <li>Fund performance and benchmarking data</li>
+                    <li>Regulatory reporting datasets</li>
+                </ul>
+            </div>
+            <div class="audience-card fade-up" style="transition-delay:.08s">
+                <div class="audience-icon">⚡</div>
+                <div class="audience-title">Fintech & Data Teams</div>
+                <p class="audience-desc">Integrate institutional-quality data into your product or pipeline without building from scratch.</p>
+                <ul class="audience-uses">
+                    <li>Plug-and-play data integration via CSV or API</li>
+                    <li>Historical time series for ML models</li>
+                    <li>Backtesting infrastructure for quant strategies</li>
+                    <li>Real-time dashboards and alerting</li>
+                </ul>
+            </div>
+            <div class="audience-card fade-up" style="transition-delay:.16s">
+                <div class="audience-icon">📊</div>
+                <div class="audience-title">Analysts & Portfolio Managers</div>
+                <p class="audience-desc">Access structured, up-to-date data in Excel, Power BI or Python — without manual downloads.</p>
+                <ul class="audience-uses">
+                    <li>Auto-refreshing Excel and Power BI feeds</li>
+                    <li>Macroeconomic trend analysis</li>
+                    <li>Investment fund comparison datasets</li>
+                    <li>Credit rating change tracking</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── DIFERENCIAIS ─── -->
+<section id="diferenciais" class="section-pad alt-bg" aria-label="Why PulseDataLabs">
+    <div class="container">
+        <div class="section-label fade-up">Differentiators</div>
+        <h2 class="section-title fade-up">Why PulseDataLabs?</h2>
+        <p class="section-desc fade-up">Data engineering designed for scale, accuracy and seamless integration — without the complexity of traditional data vendors.</p>
+
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+                </div>
+                <div class="feature-title">Data as Code</div>
+                <p class="feature-desc">Versioned flat files with complete, immutable historical snapshots. Every data point is traceable, auditable and reproducible — critical for compliance-grade workflows.</p>
+            </div>
+
+            <div class="feature-card fade-up" style="transition-delay:.07s">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+                </div>
+                <div class="feature-title">Serverless Architecture</div>
+                <p class="feature-desc">Event-driven pipelines with high availability and no infrastructure overhead. Scales automatically and delivers consistently — every business day, without exception.</p>
+            </div>
+
+            <div class="feature-card fade-up" style="transition-delay:.14s">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <div class="feature-title">One-Line Integration</div>
+                <p class="feature-desc">Consume data directly in Python, R, Excel or Power BI. No proprietary SDK, no authentication friction, no vendor lock-in. Integration in minutes, not months.</p>
+            </div>
+
+            <div class="feature-card fade-up" style="transition-delay:.21s">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <div class="feature-title">Primary Official Sources</div>
+                <p class="feature-desc">No aggregators, no middlemen. Data collected directly from central banks, exchanges and regulatory bodies — the same sources used by major financial institutions worldwide.</p>
+            </div>
+
+            <div class="feature-card fade-up" style="transition-delay:.28s">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
+                </div>
+                <div class="feature-title">Global Expansion Roadmap</div>
+                <p class="feature-desc">Starting with LatAm's most sophisticated financial market and expanding globally. Built from day one to support multiple regions, currencies and regulatory environments.</p>
+            </div>
+
+            <div class="feature-card fade-up" style="transition-delay:.35s">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="feature-title">SLA-Backed Delivery</div>
+                <p class="feature-desc">Committed delivery windows aligned to market close. Enterprise plans include dedicated SLA, monitoring dashboards and priority incident response.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── COMO FUNCIONA ─── -->
+<section id="como-funciona" class="section-pad" aria-label="How it works">
+    <div class="container">
+        <div class="section-label fade-up">Pipeline</div>
+        <h2 class="section-title fade-up">How it works</h2>
+        <p class="section-desc fade-up">Fully automated, end-to-end pipeline — from scheduled collection to clean, consumable data — running every business day.</p>
+
+        <div class="pipeline-wrapper fade-up">
+            <div class="pipeline-line" aria-hidden="true"></div>
             <div class="steps-grid">
                 <div class="step-item">
+                    <div class="step-num">01</div>
                     <div class="step-icon-box" aria-hidden="true">⏰</div>
-                    <div class="step-title">Agendamento</div>
-                    <div class="step-desc">GitHub Actions dispara a coleta em horários pré-definidos, seg–sex.</div>
+                    <div class="step-title">Scheduling</div>
+                    <div class="step-desc">Automated pipelines trigger at pre-defined times, aligned to market close windows across time zones.</div>
                 </div>
                 <div class="step-item">
+                    <div class="step-num">02</div>
                     <div class="step-icon-box" aria-hidden="true">🔗</div>
-                    <div class="step-title">Captura</div>
-                    <div class="step-desc">Scrapers acessam fontes oficiais e APIs públicas para extrair os dados.</div>
+                    <div class="step-title">Collection</div>
+                    <div class="step-desc">Dedicated scrapers access official APIs and authoritative sources, extracting raw data with full provenance tracking.</div>
                 </div>
                 <div class="step-item">
+                    <div class="step-num">03</div>
                     <div class="step-icon-box" aria-hidden="true">📄</div>
-                    <div class="step-title">Normalização</div>
-                    <div class="step-desc">Dados padronizados em UTF-8, CSV, e armazenados no repositório.</div>
+                    <div class="step-title">Normalization</div>
+                    <div class="step-desc">Data is standardized, validated and structured — consistent schema, normalized encodings, null handling and date formatting.</div>
                 </div>
                 <div class="step-item">
+                    <div class="step-num">04</div>
                     <div class="step-icon-box" aria-hidden="true">📥</div>
-                    <div class="step-title">Consumo</div>
-                    <div class="step-desc">CSVs prontos para download e importação direta em qualquer ferramenta.</div>
+                    <div class="step-title">Delivery</div>
+                    <div class="step-desc">Clean datasets delivered via direct download, REST endpoint or versioned repository — ready for immediate consumption.</div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- CTA / QUICK START -->
-    <section class="alt-bg" aria-label="Comece agora">
-        <div class="container cta-section">
-            <h2>Pronto para usar?</h2>
-            <p>
-                Clone o repositório, aponte seu <code style="color:var(--accent);font-family:var(--font-mono);font-size:0.85rem;">pd.read_csv()</code> para as URLs raw do GitHub
-                e comece a consumir dados financeiros de qualidade em minutos.
-            </p>
-            <div class="cta-buttons">
-                <a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank" class="btn-primary" aria-label="Começar com PulseFlat (abre em nova aba)">
-                    Começar com PulseFlat
-                </a>
-                <a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank" class="btn-primary" style="background:var(--accent2);" aria-label="Começar com PulseRatings (abre em nova aba)">
-                    Começar com PulseRatings
-                </a>
+<!-- ─── PRICING ─── -->
+<section id="precos" class="section-pad alt-bg" aria-label="Pricing">
+    <div class="container">
+        <div class="section-label fade-up">Pricing</div>
+        <h2 class="section-title fade-up">Simple, transparent plans</h2>
+        <p class="section-desc fade-up">Choose the plan that fits your team. All plans include daily data delivery, structured CSV output and standard support.</p>
+
+        <div class="pricing-grid">
+
+            <!-- STARTER -->
+            <div class="pricing-card fade-up">
+                <div class="pricing-tier">Starter</div>
+                <div class="pricing-name">Essential</div>
+                <p class="pricing-desc">For individual analysts and small teams getting started with structured financial data.</p>
+                <div class="pricing-price">
+                    <span class="price-currency">US$</span>
+                    <span class="price-amount">149</span>
+                </div>
+                <div class="price-period">/ month, billed annually</div>
+                <div class="price-note">or US$ 179/mo billed monthly</div>
+                <div class="pricing-divider"></div>
+                <ul class="pricing-features">
+                    <li><span class="check">✓</span> 1 data feed (PulseFlat or PulseRatings)</li>
+                    <li><span class="check">✓</span> Daily CSV delivery</li>
+                    <li><span class="check">✓</span> Up to 5 data sources</li>
+                    <li><span class="check">✓</span> 12-month historical data</li>
+                    <li><span class="check">✓</span> Direct download access</li>
+                    <li><span class="check">✓</span> Email support (48h SLA)</li>
+                    <li class="dim"><span class="minus">–</span> REST API access</li>
+                    <li class="dim"><span class="minus">–</span> Custom delivery schedule</li>
+                    <li class="dim"><span class="minus">–</span> Dedicated account manager</li>
+                </ul>
+                <a href="mailto:contact@pulsedatalabs.com?subject=Starter Plan" class="btn-plan btn-plan-outline">Get Started</a>
+            </div>
+
+            <!-- PRO (FEATURED) -->
+            <div class="pricing-card featured fade-up" style="transition-delay:.1s">
+                <div class="pricing-badge">Most Popular</div>
+                <div class="pricing-tier">Pro</div>
+                <div class="pricing-name">Professional</div>
+                <p class="pricing-desc">For investment teams, analysts and fintech companies that need comprehensive coverage and API access.</p>
+                <div class="pricing-price">
+                    <span class="price-currency">US$</span>
+                    <span class="price-amount">499</span>
+                </div>
+                <div class="price-period">/ month, billed annually</div>
+                <div class="price-note">or US$ 599/mo billed monthly</div>
+                <div class="pricing-divider"></div>
+                <ul class="pricing-features">
+                    <li><span class="check">✓</span> All data feeds included</li>
+                    <li><span class="check">✓</span> Daily CSV + REST API access</li>
+                    <li><span class="check">✓</span> All available data sources</li>
+                    <li><span class="check">✓</span> Full historical archive</li>
+                    <li><span class="check">✓</span> Custom delivery schedule</li>
+                    <li><span class="check">✓</span> Priority support (24h SLA)</li>
+                    <li><span class="check">✓</span> Up to 5 team seats</li>
+                    <li><span class="check">✓</span> Data schema documentation</li>
+                    <li class="dim"><span class="minus">–</span> Dedicated account manager</li>
+                </ul>
+                <a href="mailto:contact@pulsedatalabs.com?subject=Pro Plan" class="btn-plan btn-plan-filled">Get Started</a>
+            </div>
+
+            <!-- ENTERPRISE -->
+            <div class="pricing-card fade-up" style="transition-delay:.2s">
+                <div class="pricing-tier">Enterprise</div>
+                <div class="pricing-name">Custom</div>
+                <p class="pricing-desc">For banks, asset managers and institutions requiring SLA guarantees, custom coverage and dedicated support.</p>
+                <div class="pricing-price">
+                    <span class="price-amount" style="font-size:2rem;">Custom</span>
+                </div>
+                <div class="price-period">tailored to your volume & needs</div>
+                <div class="price-note">&nbsp;</div>
+                <div class="pricing-divider"></div>
+                <ul class="pricing-features">
+                    <li><span class="check">✓</span> Everything in Pro</li>
+                    <li><span class="check">✓</span> Contracted uptime SLA</li>
+                    <li><span class="check">✓</span> Custom data sources on request</li>
+                    <li><span class="check">✓</span> Unlimited team seats</li>
+                    <li><span class="check">✓</span> Dedicated account manager</li>
+                    <li><span class="check">✓</span> Private delivery infrastructure</li>
+                    <li><span class="check">✓</span> Compliance documentation</li>
+                    <li><span class="check">✓</span> Multi-region roadmap access</li>
+                    <li><span class="check">✓</span> 4h incident response SLA</li>
+                </ul>
+                <a href="mailto:contact@pulsedatalabs.com?subject=Enterprise Plan" class="btn-plan btn-plan-ghost">Talk to Sales</a>
+            </div>
+
+        </div>
+
+        <p class="pricing-note fade-up">
+            All prices in USD. Annual billing saves up to 17%.<br>
+            Need a custom quote or have questions? <a href="mailto:contact@pulsedatalabs.com">Contact our sales team</a> — we typically respond within one business day.
+        </p>
+    </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="section-pad" aria-label="Get started">
+    <div class="container cta-section fade-up">
+        <div class="section-label" style="justify-content:center;max-width:240px;margin:0 auto 1rem;">Get in touch</div>
+        <h2>Ready to get started?</h2>
+        <p>
+            Talk to our team and discover how PulseDataLabs can power your data workflows
+            with reliable, structured financial data — delivered daily, at institutional quality.
+        </p>
+        <div class="cta-buttons">
+            <a href="mailto:contact@pulsedatalabs.com?subject=PulseFlat inquiry" class="btn-primary">
+                Request Access — PulseFlat
+            </a>
+            <a href="mailto:contact@pulsedatalabs.com?subject=PulseRatings inquiry" class="btn-secondary">
+                Request Access — PulseRatings
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="assets/logo-full.png" alt="PulseDataLabs" style="height:22px;" onerror="this.style.display='none'">
+                <p>Enterprise financial data infrastructure. Automated collection, normalization and delivery of market data from the most trusted official sources.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Products</h4>
+                <ul>
+                    <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank">PulseFlat</a></li>
+                    <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank">PulseRatings</a></li>
+                    <li><a href="#precos">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="mailto:contact@pulsedatalabs.com">Contact</a></li>
+                    <li><a href="mailto:contact@pulsedatalabs.com?subject=Enterprise Plan">Enterprise Sales</a></li>
+                    <li><a href="https://github.com/PulseDataLabs" target="_blank">GitHub</a></li>
+                </ul>
             </div>
         </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="container">
-            <div class="footer-inner">
-                <div class="footer-brand">
-                    <img src="assets/logo-full.png" alt="PulseDataLabs">
-                    <p>Infraestrutura serverless de dados para o mercado financeiro. Transparência, eficiência e dados abertos.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Produtos</h4>
-                    <ul>
-                        <li><a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank" aria-label="PulseFlat no GitHub (abre em nova aba)">PulseFlat</a></li>
-                        <li><a href="https://github.com/PulseDataLabs/PulseRatingsBrasil" target="_blank" aria-label="PulseRatings Brasil no GitHub (abre em nova aba)">PulseRatings Brasil</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Links</h4>
-                    <ul>
-                        <li><a href="https://github.com/PulseDataLabs" target="_blank" aria-label="GitHub (abre em nova aba)">GitHub</a></li>
-                        <li><a href="https://pulsedatalabs.github.io">Site</a></li>
-                        <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank" aria-label="PulseFlat Site (abre em nova aba)">PulseFlat Site</a></li>
-                        <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank" aria-label="PulseRatings Site (abre em nova aba)">PulseRatings Site</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <span class="footer-copy">&copy; 2026 PulseDataLabs</span>
-                <span class="footer-copy">Dados abertos · Open-source · MIT</span>
-            </div>
+        <div class="footer-bottom">
+            <span class="footer-copy">&copy; 2026 PulseDataLabs. All rights reserved.</span>
+            <span class="footer-copy">Financial Data Infrastructure</span>
         </div>
-    </footer>
+    </div>
+</footer>
 
-    <script>
-        // Hamburger menu
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('nav-menu');
-
-        hamburger.addEventListener('click', function () {
-            const open = navMenu.classList.toggle('open');
-            hamburger.classList.toggle('open');
-            hamburger.setAttribute('aria-expanded', open);
-            hamburger.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+<script>
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    hamburger.addEventListener('click', function () {
+        const open = navMenu.classList.toggle('open');
+        hamburger.classList.toggle('open');
+        hamburger.setAttribute('aria-expanded', open);
+        hamburger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    navMenu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            navMenu.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            hamburger.setAttribute('aria-label', 'Open menu');
         });
+    });
 
-        // Close menu on link click (mobile)
-        navMenu.querySelectorAll('a').forEach(function (link) {
-            link.addEventListener('click', function () {
-                navMenu.classList.remove('open');
-                hamburger.classList.remove('open');
-                hamburger.setAttribute('aria-expanded', 'false');
-                hamburger.setAttribute('aria-label', 'Abrir menu');
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+    if (sections.length && navLinks.length) {
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(function (link) {
+                        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+                    });
+                }
             });
+        }, { threshold: 0.4 });
+        sections.forEach(function (s) { observer.observe(s); });
+    }
+
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const fadeObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                fadeObserver.unobserve(entry.target);
+            }
         });
-
-        // Scroll spy
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
-
-        if (sections.length && navLinks.length) {
-            const observer = new IntersectionObserver(function (entries) {
-                entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(function (link) {
-                            link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
-                        });
-                    }
-                });
-            }, { threshold: 0.4 });
-
-            sections.forEach(function (s) { observer.observe(s); });
-        }
-    </script>
+    }, { threshold: 0.12 });
+    fadeEls.forEach(function (el) { fadeObserver.observe(el); });
+</script>
 
 </body>
 </html>
