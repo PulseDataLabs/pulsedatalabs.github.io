@@ -4,452 +4,585 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseDataLabs — Infraestrutura de Dados Financeiros</title>
-    <meta name="description" content="Infraestrutura de dados financeiros de nível institucional. Coleta automatizada, normalização e entrega diária de preços de mercado, indicadores econômicos e ratings de crédito." />
+    <meta name="description" content="Infraestrutura de dados financeiros para o mercado brasileiro. Coleta, normalização e entrega automatizada de preços de mercado, indicadores econômicos e ratings de crédito." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://pulsedatalabs.github.io" />
     <meta property="og:title" content="PulseDataLabs — Infraestrutura de Dados Financeiros" />
-    <meta property="og:description" content="Dados financeiros confiáveis e estruturados, entregues diariamente para gestoras, bancos e fintechs." />
+    <meta property="og:description" content="Dados financeiros estruturados entregues diariamente para gestoras, bancos e fintechs." />
     <meta property="og:image" content="https://pulsedatalabs.github.io/assets/logo-full.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" type="image/png" href="assets/logo-full.png" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
     <link rel="canonical" href="https://pulsedatalabs.github.io" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" />
-    <link rel="preload" href="https://raw.githubusercontent.com/PulseDataLabs/PulseFlat/main/data/market_latest.json" as="fetch" crossorigin />
-    <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"Organization","name":"PulseDataLabs","url":"https://pulsedatalabs.github.io","logo":"https://pulsedatalabs.github.io/assets/logo-full.png","description":"Enterprise financial data infrastructure for investment firms, banks and fintech teams."}
-    </script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-    --bg:#050810;
-    --bg2:#080d18;
-    --bg3:#0c1220;
-    --surface:#101828;
-    --surface2:#162033;
-    --border:#192740;
-    --border2:#1f3050;
-    --accent:#00c4f0;
-    --accent2:#0088bb;
-    --accent3:#33d8ff;
-    --accent-glow:rgba(0,196,240,0.18);
-    --gold:#f0b429;
-    --green:#00e5a0;
-    --red:#ff4d6d;
-    --purple:#a78bfa;
-    --text:#ecf2f8;
-    --text2:#8fa8c0;
-    --text3:#445870;
-    --font-head:'Syne',sans-serif;
-    --font-mono:'JetBrains Mono',monospace;
-    --font-body:'Lora',serif;
-    --radius:12px;
-    --radius-sm:8px;
-    --transition:0.25s cubic-bezier(.4,0,.2,1);
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;line-height:1.65}
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* NOISE + GRID */
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.6}
-body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,196,240,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(0,196,240,0.012) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0}
+        :root {
+            --bg:        #060d14;
+            --bg2:       #0a1520;
+            --bg3:       #0e1c2a;
+            --surface:   #112236;
+            --surface2:  #162d44;
+            --border:    #1a2e42;
+            --border2:   #213d58;
+            --accent:    #00c4f0;
+            --accent2:   #0088bb;
+            --accent3:   #33d6ff;
+            --gold:      #f0b429;
+            --gold2:     #ffd166;
+            --green:     #00e5a0;
+            --red:       #ff4d6d;
+            --text:      #e6eef6;
+            --text2:     #7a9bb8;
+            --text3:     #3d5870;
+            --font-head: 'Syne', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'Lora', serif;
+            --radius:    12px;
+            --radius-sm: 6px;
+        }
 
-.skip-link{position:absolute;top:-100%;left:1rem;z-index:200;padding:.75rem 1.5rem;background:var(--accent);color:var(--bg);font-family:var(--font-mono);font-size:.8rem;border-radius:0 0 4px 4px;text-decoration:none;transition:top .2s}
-.skip-link:focus{top:0}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+        html { scroll-behavior: smooth; }
 
-/* ── LANGUAGE SWITCHER ── */
-.lang-switcher{
-    display:flex;align-items:center;gap:0;
-    background:var(--bg3);border:1px solid var(--border);
-    border-radius:100px;overflow:hidden;
-}
-.lang-btn{
-    font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;
-    text-transform:uppercase;padding:.3rem .8rem;
-    background:transparent;border:none;cursor:pointer;
-    color:var(--text3);transition:color var(--transition),background var(--transition);
-}
-.lang-btn.active{background:var(--accent);color:var(--bg);font-weight:500}
-.lang-btn:hover:not(.active){color:var(--text2)}
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.65;
+        }
 
-/* ── NAV ── */
-nav{
-    position:fixed;top:0;left:0;right:0;z-index:100;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:1.1rem 3rem;
-    background:rgba(5,8,16,0.85);
-    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-    border-bottom:1px solid var(--border);
-    transition:padding var(--transition),background var(--transition);
-}
-nav.scrolled{padding:.85rem 3rem;background:rgba(5,8,16,0.95)}
-.nav-left{display:flex;align-items:center;gap:2.5rem}
-.nav-logo{display:flex;align-items:center;gap:.65rem;text-decoration:none}
-.nav-logo-text{font-family:var(--font-head);font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:-.02em}
-.nav-logo-text span{color:var(--accent)}
-.nav-menu{display:flex;align-items:center;gap:2rem;list-style:none}
-.nav-menu a{font-family:var(--font-mono);font-size:.7rem;color:var(--text3);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color var(--transition);position:relative;padding-bottom:2px}
-.nav-menu a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--accent);transform:scaleX(0);transition:transform var(--transition)}
-.nav-menu a:hover,.nav-menu a.active{color:var(--accent)}
-.nav-menu a:hover::after,.nav-menu a.active::after{transform:scaleX(1)}
-.nav-right{display:flex;align-items:center;gap:1rem}
-.nav-cta{font-family:var(--font-mono)!important;font-size:.7rem!important;font-weight:500!important;color:var(--bg)!important;background:var(--accent)!important;padding:.45rem 1.15rem;border-radius:100px;text-decoration:none;letter-spacing:.05em;transition:background var(--transition),transform .15s,box-shadow var(--transition);box-shadow:0 0 20px rgba(0,196,240,0.2)}
-.nav-cta:hover{background:var(--accent3)!important;transform:translateY(-1px);box-shadow:0 0 32px rgba(0,196,240,0.35)}
-.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
-.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:transform .2s,opacity .2s}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.hamburger.open span:nth-child(2){opacity:0}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+        /* grid bg */
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background-image:
+                linear-gradient(rgba(0,196,240,0.014) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,196,240,0.014) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none; z-index: 0;
+        }
 
-/* ── ANIMATIONS ── */
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@keyframes drift1{from{transform:translate(0,0)}to{transform:translate(70px,45px)}}
-@keyframes drift2{from{transform:translate(0,0)}to{transform:translate(-50px,-70px)}}
-@keyframes drift3{from{transform:translate(0,0)}to{transform:translate(35px,-35px)}}
-@keyframes scroll-ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-@keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
-.fade-up{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
-.fade-up.visible{opacity:1;transform:translateY(0)}
+        .skip-link {
+            position: absolute; top: -100%; left: 1rem; z-index: 300;
+            padding: 0.75rem 1.5rem; background: var(--accent); color: var(--bg);
+            font-family: var(--font-mono); font-size: 0.8rem;
+            border-radius: 0 0 4px 4px; text-decoration: none; transition: top 0.2s;
+        }
+        .skip-link:focus { top: 0; }
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-/* ── TICKER ── */
-.ticker-strip{position:relative;z-index:1;background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;height:38px;display:flex;align-items:center}
-.ticker-track{display:flex;white-space:nowrap;animation:scroll-ticker 36s linear infinite;width:max-content}
-.ticker-item{font-family:var(--font-mono);font-size:.62rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding:0 2.5rem;display:flex;align-items:center;gap:.5rem}
-.ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.5}
-.ticker-val{color:var(--accent)}
-.ticker-up{color:var(--green)}
-.ticker-dn{color:var(--red)}
+        /* ─── NAV ─── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 3rem;
+            background: rgba(6,13,20,0.92);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            transition: padding 0.3s;
+        }
+        nav.scrolled { padding: 0.7rem 3rem; }
 
-/* ── HERO ── */
-.hero{
-    position:relative;z-index:1;min-height:100vh;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;padding:9rem 2rem 6rem;overflow:hidden;
-}
-.hero-orb{position:absolute;border-radius:50%;filter:blur(130px);pointer-events:none}
-.hero-orb-1{width:680px;height:680px;background:radial-gradient(circle,rgba(0,196,240,.1),transparent 70%);top:-140px;left:-180px;animation:drift1 14s ease-in-out infinite alternate}
-.hero-orb-2{width:560px;height:560px;background:radial-gradient(circle,rgba(240,180,41,.065),transparent 70%);bottom:-100px;right:-120px;animation:drift2 17s ease-in-out infinite alternate}
-.hero-orb-3{width:340px;height:340px;background:radial-gradient(circle,rgba(0,229,160,.05),transparent 70%);top:42%;left:56%;animation:drift3 11s ease-in-out infinite alternate}
-.hero-badge{
-    display:inline-flex;align-items:center;gap:.5rem;
-    font-family:var(--font-mono);font-size:.63rem;color:var(--accent);
-    letter-spacing:.2em;text-transform:uppercase;
-    background:rgba(0,196,240,0.07);border:1px solid rgba(0,196,240,0.2);
-    padding:.4rem 1.1rem;border-radius:100px;margin-bottom:2.8rem;
-    animation:fadeUp .7s ease .1s both;
-}
-.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse-dot 1.5s ease-in-out infinite}
-.hero-logo{margin-bottom:2rem;animation:float 7s ease-in-out infinite}
-.hero-title{
-    font-family:var(--font-head);font-weight:800;
-    font-size:clamp(2.2rem,5.5vw,4rem);
-    line-height:1.05;letter-spacing:-.04em;margin-bottom:.6rem;
-    animation:fadeUp .7s ease .3s both;
-}
-.hero-title .accent{color:var(--accent)}
-.hero-title .stroke{color:transparent;-webkit-text-stroke:1.5px var(--accent)}
-.hero-subtitle{
-    font-family:var(--font-mono);font-size:.72rem;color:var(--text3);
-    letter-spacing:.25em;text-transform:uppercase;margin-bottom:2rem;
-    animation:fadeUp .7s ease .4s both;
-}
-.hero-description{
-    max-width:640px;font-size:1.05rem;line-height:1.85;color:var(--text2);
-    margin-bottom:3rem;animation:fadeUp .7s ease .5s both;
-}
-.hero-description strong{color:var(--text);font-style:normal;font-weight:500}
-.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s ease .6s both}
-.hero-scroll{
-    position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
-    display:flex;flex-direction:column;align-items:center;gap:.5rem;
-    font-family:var(--font-mono);font-size:.58rem;color:var(--text3);
-    letter-spacing:.15em;text-transform:uppercase;
-    animation:fadeUp .7s ease .9s both;cursor:pointer;text-decoration:none;
-    transition:color var(--transition);
-}
-.hero-scroll:hover{color:var(--accent)}
-.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:pulse-dot 2s ease-in-out infinite}
+        .nav-logo { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
 
-/* ── BUTTONS ── */
-.btn-primary{
-    font-family:var(--font-mono);font-size:.78rem;font-weight:500;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--bg);
-    background:var(--accent);padding:.9rem 2.2rem;border-radius:100px;
-    text-decoration:none;transition:background var(--transition),transform .15s,box-shadow var(--transition);
-    box-shadow:0 0 32px rgba(0,196,240,0.22);
-}
-.btn-primary:hover{background:var(--accent3);transform:translateY(-2px);box-shadow:0 0 56px rgba(0,196,240,0.38)}
-.btn-secondary{
-    font-family:var(--font-mono);font-size:.78rem;font-weight:400;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--text2);
-    background:transparent;padding:.9rem 2.2rem;border-radius:100px;
-    border:1px solid var(--border2);text-decoration:none;
-    transition:border-color var(--transition),color var(--transition),transform .15s;
-}
-.btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+        /* hero logo */
+        .hero-logo-wrap {
+            margin-bottom: 2rem;
+            animation: float 6s ease-in-out infinite;
+        }
+        .hero-logo-img {
+            height: 90px;
+            width: auto;
+            object-fit: contain;
+            /* logo has dark bg — lighten integration with page */
+            border-radius: 18px;
+            filter: drop-shadow(0 0 32px rgba(0,196,240,0.25));
+        }
 
-/* ── STATS BAR ── */
-.stats-bar{position:relative;z-index:1;display:flex;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.stat-item{flex:1;padding:1.8rem 2rem;border-right:1px solid var(--border);text-align:center;position:relative;transition:background var(--transition)}
-.stat-item:last-child{border-right:none}
-.stat-item:hover{background:var(--surface)}
-.stat-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity var(--transition)}
-.stat-item:hover::before{opacity:1}
-.stat-value{font-family:var(--font-head);font-weight:800;font-size:2rem;color:var(--text);letter-spacing:-.04em;display:block}
-.stat-value span{color:var(--accent)}
-.stat-label{font-family:var(--font-mono);font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-top:.35rem;display:block}
+        .nav-right { display: flex; align-items: center; gap: 2.25rem; }
+        .nav-menu { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-menu a {
+            font-family: var(--font-mono); font-size: 0.7rem; color: var(--text2);
+            text-decoration: none; letter-spacing: 0.07em; text-transform: uppercase; transition: color 0.2s;
+        }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--accent); }
 
-/* ── LAYOUT ── */
-section{position:relative;z-index:1}
-.container{max-width:1180px;margin:0 auto;padding:0 2rem}
-.section-pad{padding:8rem 0}
-.section-label{
-    font-family:var(--font-mono);font-size:.65rem;color:var(--accent);
-    letter-spacing:.25em;text-transform:uppercase;margin-bottom:1rem;
-    display:flex;align-items:center;gap:.75rem;
-}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.section-title{font-family:var(--font-head);font-weight:700;font-size:clamp(1.9rem,4vw,2.8rem);letter-spacing:-.035em;line-height:1.1;margin-bottom:1rem}
-.section-desc{color:var(--text2);font-size:1rem;line-height:1.8;max-width:580px}
-.alt-bg{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+        /* language switcher */
+        .lang-switcher {
+            display: flex; align-items: center;
+            background: var(--bg3); border: 1px solid var(--border2);
+            border-radius: 100px; overflow: hidden;
+        }
+        .lang-btn {
+            font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 0.3rem 0.7rem; background: transparent; border: none;
+            color: var(--text3); cursor: pointer; transition: all 0.2s;
+        }
+        .lang-btn.active {
+            background: var(--accent); color: var(--bg); border-radius: 100px;
+        }
+        .lang-btn:hover:not(.active) { color: var(--text); }
 
-/* ── PRODUCT CARDS ── */
-.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3.5rem}
-.card{
-    background:var(--bg2);border:1px solid var(--border);
-    border-radius:var(--radius);padding:2.25rem;
-    transition:background var(--transition),border-color var(--transition),transform var(--transition),box-shadow var(--transition);
-    position:relative;overflow:hidden;
-}
-.card:hover{background:var(--surface);border-color:var(--border2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.35)}
-.card-accent{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity var(--transition)}
-.card:hover .card-accent{opacity:1}
-.product-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
-.product-icon{
-    width:48px;height:48px;border-radius:var(--radius-sm);
-    background:var(--bg3);border:1px solid var(--border2);
-    display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;
-    transition:background var(--transition),border-color var(--transition);
-}
-.card:hover .product-icon{background:rgba(0,196,240,0.08);border-color:rgba(0,196,240,0.25)}
-.product-name{font-family:var(--font-head);font-weight:700;font-size:1.2rem;letter-spacing:-.02em}
-.product-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--text3);letter-spacing:.05em;margin-top:.2rem;line-height:1.5}
-.product-desc{font-size:.9rem;line-height:1.75;color:var(--text2);margin-bottom:1.5rem}
-.pill-group{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem}
-.pill{
-    font-family:var(--font-mono);font-size:.57rem;padding:.22rem .6rem;
-    background:var(--bg3);border:1px solid var(--border);border-radius:100px;
-    color:var(--text3);text-transform:uppercase;letter-spacing:.1em;
-    transition:border-color var(--transition),color var(--transition);
-}
-.card:hover .pill{border-color:var(--border2);color:var(--text2)}
-.link-row{display:flex;gap:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)}
-.link-row a{font-family:var(--font-mono);font-size:.68rem;color:var(--text3);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:color var(--transition);letter-spacing:.04em}
-.link-row a:hover{color:var(--accent)}
-.link-row svg{width:12px;height:12px;flex-shrink:0}
+        .nav-cta {
+            font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
+            letter-spacing: 0.05em; text-transform: uppercase; color: var(--bg);
+            background: var(--accent); padding: 0.5rem 1.1rem;
+            border-radius: var(--radius-sm); text-decoration: none;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+        .nav-cta:hover { background: var(--accent3); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,196,240,0.3); }
 
-/* ── SOURCES ── */
-.sources-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-top:3.5rem}
-.source-card{
-    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-    padding:1.6rem 1rem;text-align:center;
-    transition:background var(--transition),border-color var(--transition),transform var(--transition),box-shadow var(--transition);cursor:default;
-}
-.source-card:hover{background:var(--surface2);border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,196,240,0.12)}
-.source-abbr{font-family:var(--font-head);font-weight:800;font-size:1.4rem;letter-spacing:-.02em;color:var(--accent);margin-bottom:.4rem}
-.source-name{font-family:var(--font-mono);font-size:.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;line-height:1.6;margin-bottom:.9rem}
-.source-examples{display:flex;flex-direction:column;gap:.3rem}
-.source-example{font-family:var(--font-mono);font-size:.54rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.18rem .45rem;text-align:left}
+        .hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.2s, opacity 0.2s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-/* ── PIPELINE ── */
-.pipeline-wrapper{margin-top:4rem;position:relative}
-.pipeline-line{position:absolute;top:28px;left:calc(12.5% + 28px);right:calc(12.5% + 28px);height:1px;background:linear-gradient(90deg,var(--border),var(--accent),var(--border));z-index:0}
-.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;position:relative;z-index:1}
-.step-item{text-align:center}
-.step-num{font-family:var(--font-mono);font-size:.53rem;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem;opacity:.7}
-.step-icon-box{
-    width:56px;height:56px;border-radius:var(--radius-sm);
-    background:var(--surface);border:1px solid var(--border2);
-    display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;font-size:1.4rem;
-    transition:all var(--transition);
-}
-.step-item:hover .step-icon-box{background:rgba(0,196,240,0.1);border-color:var(--accent);box-shadow:0 0 28px rgba(0,196,240,0.22)}
-.step-title{font-family:var(--font-head);font-weight:600;font-size:.95rem;margin-bottom:.4rem}
-.step-desc{font-family:var(--font-mono);font-size:.63rem;color:var(--text3);line-height:1.7}
+        /* ─── ANIMATIONS ─── */
+        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.65)} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+        @keyframes scroll-ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes orb1 { from{transform:translate(0,0) scale(1)} to{transform:translate(50px,35px) scale(1.05)} }
+        @keyframes orb2 { from{transform:translate(0,0) scale(1)} to{transform:translate(-35px,-55px) scale(0.95)} }
+        @keyframes orb3 { from{transform:translate(0,0)} to{transform:translate(25px,-25px)} }
+        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
 
-/* ── AUDIENCE ── */
-.audience-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem}
-.audience-card{
-    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;
-    transition:background var(--transition),border-color var(--transition),transform var(--transition);
-    position:relative;overflow:hidden;
-}
-.audience-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,196,240,0.03),transparent 60%);pointer-events:none}
-.audience-card:hover{background:var(--surface2);border-color:var(--border2);transform:translateY(-3px)}
-.audience-icon{font-size:2rem;margin-bottom:1.1rem}
-.audience-title{font-family:var(--font-head);font-weight:700;font-size:1rem;margin-bottom:.65rem}
-.audience-desc{font-size:.87rem;color:var(--text2);line-height:1.75;margin-bottom:1.1rem}
-.audience-uses{list-style:none;display:flex;flex-direction:column;gap:.35rem}
-.audience-uses li{font-family:var(--font-mono);font-size:.62rem;color:var(--text3);display:flex;align-items:flex-start;gap:.5rem}
-.audience-uses li::before{content:'›';color:var(--accent);flex-shrink:0}
+        .fade-up { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-/* ── FEATURES ── */
-.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem}
-.feature-card{
-    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;
-    transition:background var(--transition),transform var(--transition),box-shadow var(--transition);
-}
-.feature-card:hover{background:var(--surface2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.25)}
-.feature-icon{
-    width:44px;height:44px;border-radius:var(--radius-sm);
-    background:rgba(0,196,240,0.08);border:1px solid rgba(0,196,240,0.18);
-    display:flex;align-items:center;justify-content:center;margin-bottom:1.3rem;
-    transition:background var(--transition),box-shadow var(--transition);
-}
-.feature-card:hover .feature-icon{background:rgba(0,196,240,0.14);box-shadow:0 0 20px rgba(0,196,240,0.18)}
-.feature-icon svg{width:18px;height:18px;color:var(--accent)}
-.feature-title{font-family:var(--font-head);font-weight:600;font-size:.95rem;margin-bottom:.65rem}
-.feature-desc{font-size:.87rem;line-height:1.75;color:var(--text2)}
+        /* ─── TICKER ─── */
+        .ticker-strip {
+            position: relative; z-index: 1;
+            background: rgba(10,21,32,0.9);
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            overflow: hidden; height: 38px; display: flex; align-items: center;
+        }
+        .ticker-track { display: flex; white-space: nowrap; animation: scroll-ticker 36s linear infinite; width: max-content; }
+        .ticker-item { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.09em; text-transform: uppercase; padding: 0 2.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .ticker-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.45; }
+        .ticker-item .val { color: var(--text2); }
+        .ticker-item .up { color: var(--green); }
+        .ticker-item .dn { color: var(--red); }
 
-/* ── PRICING ── */
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem;align-items:start}
-.pricing-card{
-    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-    padding:2.5rem 2rem;position:relative;
-    transition:transform var(--transition),box-shadow var(--transition);
-}
-.pricing-card:hover{transform:translateY(-5px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
-.pricing-card.featured{background:var(--surface2);border-color:var(--accent);box-shadow:0 0 48px rgba(0,196,240,0.14)}
-.pricing-badge{
-    position:absolute;top:-13px;left:50%;transform:translateX(-50%);
-    font-family:var(--font-mono);font-size:.58rem;
-    color:var(--bg);background:var(--accent);
-    padding:.28rem 1rem;border-radius:100px;
-    letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
-    box-shadow:0 0 20px rgba(0,196,240,0.3);
-}
-.pricing-tier{font-family:var(--font-mono);font-size:.63rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.75rem}
-.pricing-name{font-family:var(--font-head);font-weight:800;font-size:1.55rem;letter-spacing:-.025em;margin-bottom:.5rem}
-.pricing-desc{font-size:.85rem;color:var(--text2);line-height:1.65;margin-bottom:2rem;min-height:3.5rem}
-.pricing-price{display:flex;align-items:flex-end;gap:.3rem;margin-bottom:.4rem}
-.price-amount{font-family:var(--font-head);font-weight:800;font-size:2.9rem;letter-spacing:-.05em;color:var(--text);line-height:1}
-.price-currency{font-family:var(--font-mono);font-size:1rem;color:var(--text3);margin-bottom:.45rem}
-.price-period{font-family:var(--font-mono);font-size:.66rem;color:var(--text3);margin-bottom:.4rem;letter-spacing:.04em}
-.price-note{font-family:var(--font-mono);font-size:.58rem;color:var(--text3);margin-bottom:2rem;min-height:1.2rem}
-.pricing-divider{height:1px;background:var(--border);margin-bottom:1.75rem}
-.pricing-features{list-style:none;display:flex;flex-direction:column;gap:.7rem;margin-bottom:2rem}
-.pricing-features li{font-family:var(--font-mono);font-size:.67rem;color:var(--text2);display:flex;align-items:flex-start;gap:.6rem;line-height:1.5}
-.pricing-features li .check{color:var(--green);flex-shrink:0;font-size:.7rem;margin-top:.1rem}
-.pricing-features li .minus{color:var(--text3);flex-shrink:0}
-.pricing-features li.dim{color:var(--text3)}
-.btn-plan{display:block;width:100%;text-align:center;font-family:var(--font-mono);font-size:.74rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:.88rem 1rem;border-radius:100px;text-decoration:none;transition:all var(--transition);cursor:pointer;border:none}
-.btn-plan-outline{color:var(--text2);border:1px solid var(--border2);background:transparent}
-.btn-plan-outline:hover{border-color:var(--accent);color:var(--accent)}
-.btn-plan-filled{color:var(--bg);background:var(--accent);border:1px solid var(--accent);box-shadow:0 0 28px rgba(0,196,240,0.28)}
-.btn-plan-filled:hover{background:var(--accent3);box-shadow:0 0 44px rgba(0,196,240,0.42)}
-.btn-plan-ghost{color:var(--text3);border:1px solid var(--border);background:transparent}
-.btn-plan-ghost:hover{border-color:var(--text2);color:var(--text2)}
-.pricing-note{text-align:center;margin-top:2.5rem;font-family:var(--font-mono);font-size:.67rem;color:var(--text3);line-height:1.85}
-.pricing-note a{color:var(--accent);text-decoration:none}
-.pricing-note a:hover{text-decoration:underline}
+        /* ─── HERO ─── */
+        .hero {
+            position: relative; z-index: 1; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 9rem 2rem 6rem; overflow: hidden;
+        }
+        .hero-orb { position: absolute; border-radius: 50%; filter: blur(130px); pointer-events: none; }
+        .hero-orb-1 { width:700px;height:700px;background:radial-gradient(circle,rgba(0,196,240,.1),transparent 70%);top:-150px;left:-200px;animation:orb1 14s ease-in-out infinite alternate; }
+        .hero-orb-2 { width:550px;height:550px;background:radial-gradient(circle,rgba(240,180,41,.065),transparent 70%);bottom:-100px;right:-120px;animation:orb2 17s ease-in-out infinite alternate; }
+        .hero-orb-3 { width:350px;height:350px;background:radial-gradient(circle,rgba(0,229,160,.05),transparent 70%);top:38%;left:52%;animation:orb3 11s ease-in-out infinite alternate; }
 
-/* ── CTA SECTION ── */
-.cta-section{padding:8rem 0;text-align:center}
-.cta-inner{
-    background:var(--surface);border:1px solid var(--border);border-radius:20px;
-    padding:5rem 4rem;position:relative;overflow:hidden;
-    max-width:820px;margin:0 auto;
-}
-.cta-inner::before{
-    content:'';position:absolute;inset:0;
-    background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,196,240,0.08),transparent 70%);
-    pointer-events:none;
-}
-.cta-inner h2{font-family:var(--font-head);font-weight:700;font-size:clamp(1.8rem,4vw,2.7rem);letter-spacing:-.035em;line-height:1.1;margin-bottom:1.1rem}
-.cta-inner p{color:var(--text2);font-size:1rem;line-height:1.8;max-width:520px;margin:0 auto 2.8rem}
-.cta-buttons{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 0.55rem;
+            font-family: var(--font-mono); font-size: 0.62rem; color: var(--accent);
+            letter-spacing: 0.18em; text-transform: uppercase;
+            background: rgba(0,196,240,0.07); border: 1px solid rgba(0,196,240,0.22);
+            padding: 0.38rem 1.1rem; border-radius: 100px; margin-bottom: 2.5rem;
+            animation: fadeUp 0.7s ease 0.1s both;
+        }
+        .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse-dot 1.6s ease-in-out infinite; }
 
-/* ── FOOTER ── */
-footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4rem 0 2.5rem;background:var(--bg)}
-.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3.5rem;margin-bottom:3rem}
-.footer-brand p{font-family:var(--font-mono);font-size:.72rem;color:var(--text3);line-height:1.8;max-width:280px;margin-top:.8rem}
-.footer-col h4{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text2);margin-bottom:1.1rem}
-.footer-col ul{list-style:none}
-.footer-col li{margin-bottom:.6rem}
-.footer-col a{font-family:var(--font-mono);font-size:.68rem;color:var(--text3);text-decoration:none;transition:color var(--transition)}
-.footer-col a:hover{color:var(--accent)}
-.footer-bottom{padding-top:2rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-.footer-copy{font-family:var(--font-mono);font-size:.6rem;color:var(--text3)}
+        .hero-eyebrow {
+            font-family: var(--font-mono); font-size: 0.7rem; color: var(--text3);
+            letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 1.4rem;
+            animation: fadeUp 0.7s ease 0.25s both;
+        }
 
-/* ── RESPONSIVE ── */
-@media(max-width:1024px){
-    nav{padding:1rem 1.5rem}
-    nav.scrolled{padding:.85rem 1.5rem}
-    .hamburger{display:flex}
-    .nav-menu{
-        display:none;position:absolute;top:100%;left:0;right:0;
-        flex-direction:column;gap:0;background:var(--bg);
-        border-bottom:1px solid var(--border);padding:1rem 0;
-    }
-    .nav-menu.open{display:flex}
-    .nav-menu a{padding:.75rem 1.5rem;width:100%}
-    .nav-menu .nav-cta{margin:.75rem 1.5rem;text-align:center;display:block}
-    .product-grid,.features-grid,.audience-grid,.pricing-grid{grid-template-columns:1fr}
-    .sources-grid{grid-template-columns:repeat(3,1fr)}
-    .steps-grid{grid-template-columns:1fr 1fr}
-    .pipeline-line{display:none}
-    .stats-bar{flex-wrap:wrap}
-    .stat-item{min-width:50%;border-right:none;border-bottom:1px solid var(--border)}
-    .footer-inner{grid-template-columns:1fr 1fr}
-    .cta-inner{padding:3.5rem 2rem}
-}
-@media(max-width:600px){
-    .hero-title{font-size:2.6rem}
-    .container{padding:0 1.25rem}
-    .hero{padding:7.5rem 1.25rem 5rem}
-    .stat-item{min-width:100%}
-    .steps-grid{grid-template-columns:1fr}
-    .sources-grid{grid-template-columns:1fr 1fr}
-    .footer-inner{grid-template-columns:1fr}
-    .section-pad{padding:5.5rem 0}
-    .cta-inner{padding:2.5rem 1.5rem;border-radius:var(--radius)}
-}
-</style>
+        .hero-title {
+            font-family: var(--font-head); font-weight: 800;
+            font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+            line-height: 1.08; letter-spacing: -0.035em; margin-bottom: 1.8rem;
+            animation: fadeUp 0.7s ease 0.35s both;
+        }
+        .hero-title .line1 { display: block; color: var(--text); }
+        .hero-title .line2 { display: block; color: var(--accent); }
+        .hero-title .line3 {
+            display: block; color: transparent;
+            -webkit-text-stroke: 1.5px rgba(0,196,240,0.5);
+        }
+
+        .hero-description {
+            max-width: 580px; font-size: 1.05rem; line-height: 1.82; color: var(--text2);
+            margin-bottom: 2.8rem; animation: fadeUp 0.7s ease 0.45s both;
+        }
+        .hero-description strong { color: var(--text); font-weight: 500; font-style: normal; }
+
+        .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.7s ease 0.55s both; }
+
+        /* ─── BUTTONS ─── */
+        .btn-primary {
+            font-family: var(--font-mono); font-size: 0.76rem; font-weight: 500;
+            letter-spacing: 0.06em; text-transform: uppercase; color: var(--bg);
+            background: var(--accent); padding: 0.88rem 2.2rem; border-radius: var(--radius-sm);
+            text-decoration: none; transition: all 0.2s;
+            box-shadow: 0 0 30px rgba(0,196,240,0.22);
+        }
+        .btn-primary:hover { background: var(--accent3); transform: translateY(-2px); box-shadow: 0 4px 40px rgba(0,196,240,0.38); }
+
+        .btn-secondary {
+            font-family: var(--font-mono); font-size: 0.76rem; font-weight: 400;
+            letter-spacing: 0.06em; text-transform: uppercase; color: var(--text2);
+            background: transparent; padding: 0.88rem 2.2rem; border-radius: var(--radius-sm);
+            border: 1px solid var(--border2); text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+        .btn-gold {
+            font-family: var(--font-mono); font-size: 0.76rem; font-weight: 500;
+            letter-spacing: 0.06em; text-transform: uppercase; color: var(--bg);
+            background: var(--gold); padding: 0.88rem 2.2rem; border-radius: var(--radius-sm);
+            text-decoration: none; transition: all 0.2s;
+        }
+        .btn-gold:hover { background: var(--gold2); transform: translateY(-2px); }
+
+        /* ─── STATS BAR ─── */
+        .stats-bar { position: relative; z-index: 1; display: flex; background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .stat-item { flex: 1; padding: 1.8rem 1.5rem; border-right: 1px solid var(--border); text-align: center; position: relative; transition: background 0.25s; }
+        .stat-item:last-child { border-right: none; }
+        .stat-item:hover { background: var(--bg3); }
+        .stat-item::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:0; transition:opacity 0.3s; }
+        .stat-item:hover::after { opacity: 1; }
+        .stat-value { font-family: var(--font-head); font-weight: 800; font-size: 2rem; color: var(--text); letter-spacing: -0.03em; display: block; }
+        .stat-value span { color: var(--accent); }
+        .stat-label { font-family: var(--font-mono); font-size: 0.61rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; display: block; }
+
+        /* ─── LAYOUT ─── */
+        section { position: relative; z-index: 1; }
+        .container { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+        .section-pad { padding: 7rem 0; }
+        .section-pad-sm { padding: 5rem 0; }
+
+        .section-eyebrow {
+            font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent);
+            letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.8rem;
+        }
+        .section-eyebrow::after { content:''; flex:1; height:1px; background:var(--border2); max-width: 60px; }
+
+        .section-title {
+            font-family: var(--font-head); font-weight: 700;
+            font-size: clamp(1.9rem, 4vw, 2.75rem);
+            letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem;
+        }
+        .section-desc { color: var(--text2); font-size: 1rem; line-height: 1.78; max-width: 560px; }
+
+        .alt-bg {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* ─── PRODUCT CARDS ─── */
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3.5rem; }
+
+        .product-card {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 2.25rem;
+            transition: background 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        .product-card:hover {
+            background: var(--surface); border-color: rgba(0,196,240,0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 50px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,196,240,0.1);
+        }
+        .product-card::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:3px;
+            background: linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
+            opacity:0; transition:opacity 0.3s;
+        }
+        .product-card:hover::before { opacity: 1; }
+
+        .product-card.ratings-card::before {
+            background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+        }
+        .product-card.ratings-card:hover { border-color: rgba(240,180,41,0.35); }
+
+        .product-card.milhas-card::before {
+            background: linear-gradient(90deg, transparent, var(--green) 50%, transparent);
+        }
+        .product-card.milhas-card:hover { border-color: rgba(0,229,160,0.35); }
+        .pill.green { border-color: rgba(0,229,160,0.3); color: var(--green); background: rgba(0,229,160,0.06); }
+
+        .product-icon-wrap {
+            width: 52px; height: 52px; border-radius: 12px;
+            background: var(--bg3); border: 1px solid var(--border2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0; margin-bottom: 1.5rem;
+        }
+        .product-name { font-family: var(--font-head); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+        .product-tagline { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 1.25rem; }
+        .product-desc { font-size: 0.9rem; line-height: 1.75; color: var(--text2); margin-bottom: 1.75rem; flex: 1; }
+
+        .pill-group { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.75rem; }
+        .pill {
+            font-family: var(--font-mono); font-size: 0.58rem; padding: 0.23rem 0.6rem;
+            background: var(--bg3); border: 1px solid var(--border2);
+            border-radius: 4px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .product-card:hover .pill { border-color: var(--border2); }
+
+        .pill.accent { border-color: rgba(0,196,240,0.3); color: var(--accent); background: rgba(0,196,240,0.06); }
+        .pill.gold { border-color: rgba(240,180,41,0.3); color: var(--gold); background: rgba(240,180,41,0.06); }
+
+        .link-row {
+            display: flex; gap: 1.5rem; padding-top: 1.5rem;
+            border-top: 1px solid var(--border); margin-top: auto;
+        }
+        .link-row a {
+            font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3);
+            text-decoration: none; display: inline-flex; align-items: center; gap: 0.45rem;
+            transition: color 0.2s; letter-spacing: 0.04em;
+        }
+        .link-row a:hover { color: var(--accent); }
+        .link-row svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+        /* ─── SOURCES ─── */
+        .sources-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 3.5rem; }
+        .source-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.6rem 1.1rem; text-align: center;
+            transition: all 0.25s; cursor: default;
+        }
+        .source-card:hover {
+            background: var(--surface2); border-color: rgba(0,196,240,0.4);
+            transform: translateY(-4px); box-shadow: 0 10px 35px rgba(0,196,240,0.1);
+        }
+        .source-abbr { font-family: var(--font-head); font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em; color: var(--accent); margin-bottom: 0.35rem; }
+        .source-name { font-family: var(--font-mono); font-size: 0.56rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; line-height: 1.55; margin-bottom: 0.9rem; }
+        .source-examples { display: flex; flex-direction: column; gap: 0.28rem; }
+        .source-example { font-family: var(--font-mono); font-size: 0.54rem; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); border-radius: 3px; padding: 0.18rem 0.45rem; text-align: left; }
+
+        /* ─── PIPELINE ─── */
+        .pipeline-wrapper { margin-top: 4rem; position: relative; }
+        .pipeline-line { position: absolute; top: 28px; left: calc(12.5% + 24px); right: calc(12.5% + 24px); height: 1px; background: linear-gradient(90deg, var(--border), var(--accent), var(--border)); z-index: 0; }
+        .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; position: relative; z-index: 1; }
+        .step-item { text-align: center; }
+        .step-num { font-family: var(--font-mono); font-size: 0.55rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
+        .step-icon-box {
+            width: 58px; height: 58px; border-radius: 14px;
+            background: var(--surface); border: 1px solid var(--border2);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.1rem; font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        .step-item:hover .step-icon-box {
+            background: rgba(0,196,240,0.1); border-color: var(--accent);
+            box-shadow: 0 0 28px rgba(0,196,240,0.28);
+            transform: translateY(-3px);
+        }
+        .step-title { font-family: var(--font-head); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .step-desc { font-family: var(--font-mono); font-size: 0.63rem; color: var(--text3); line-height: 1.7; }
+
+        /* ─── CLIENTS / AUDIENCE ─── */
+        .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+        .audience-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 2.25rem;
+            transition: all 0.25s; position: relative; overflow: hidden;
+        }
+        .audience-card:hover { background: var(--surface2); border-color: var(--border2); transform: translateY(-2px); }
+        .audience-card::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0,196,240,0.3), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .audience-card:hover::after { opacity: 1; }
+        .audience-icon { font-size: 1.8rem; margin-bottom: 1.1rem; }
+        .audience-title { font-family: var(--font-head); font-weight: 700; font-size: 1rem; margin-bottom: 0.65rem; }
+        .audience-desc { font-size: 0.87rem; color: var(--text2); line-height: 1.72; margin-bottom: 1.25rem; }
+        .audience-uses { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+        .audience-uses li {
+            font-family: var(--font-mono); font-size: 0.63rem; color: var(--text3);
+            display: flex; align-items: flex-start; gap: 0.55rem; line-height: 1.55;
+        }
+        .audience-uses li::before { content: '›'; color: var(--accent); flex-shrink: 0; line-height: 1.55; }
+
+        /* ─── FEATURES ─── */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+        .feature-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 2.25rem;
+            transition: background 0.25s, border-color 0.25s;
+        }
+        .feature-card:hover { background: var(--surface2); border-color: var(--border2); }
+        .feature-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--bg3); border: 1px solid var(--border2);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 1.4rem;
+        }
+        .feature-icon svg { width: 20px; height: 20px; color: var(--accent); }
+        .feature-title { font-family: var(--font-head); font-weight: 600; font-size: 0.97rem; margin-bottom: 0.65rem; }
+        .feature-desc { font-size: 0.86rem; line-height: 1.75; color: var(--text2); }
+
+        /* ─── CONSULTING ─── */
+        .consulting-section { padding: 7rem 0; }
+        .consulting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 1rem; }
+        .consulting-intro .section-desc { max-width: 480px; margin-bottom: 2rem; }
+
+        .consulting-services { display: flex; flex-direction: column; gap: 1rem; margin-top: 3rem; }
+        .service-item {
+            display: flex; align-items: flex-start; gap: 1.25rem;
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.5rem; transition: all 0.25s;
+        }
+        .service-item:hover { background: var(--surface); border-color: var(--border2); transform: translateX(4px); }
+        .service-num {
+            font-family: var(--font-head); font-weight: 800; font-size: 1.5rem;
+            color: rgba(0,196,240,0.2); letter-spacing: -0.04em; line-height: 1;
+            flex-shrink: 0; min-width: 2.2rem;
+        }
+        .service-content {}
+        .service-title { font-family: var(--font-head); font-weight: 600; font-size: 0.97rem; margin-bottom: 0.4rem; }
+        .service-desc { font-family: var(--font-mono); font-size: 0.63rem; color: var(--text3); line-height: 1.65; }
+
+        .consulting-cta-box {
+            background: var(--bg2); border: 1px solid var(--border2);
+            border-radius: var(--radius); padding: 2.5rem;
+            position: relative; overflow: hidden;
+        }
+        .consulting-cta-box::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:3px;
+            background: linear-gradient(90deg, var(--gold), var(--accent));
+        }
+        .consulting-cta-box h3 { font-family: var(--font-head); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.025em; margin-bottom: 0.8rem; }
+        .consulting-cta-box p { font-size: 0.9rem; color: var(--text2); line-height: 1.75; margin-bottom: 2rem; }
+        .email-link { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); text-decoration: none; display: block; margin-top: 1rem; }
+        .email-link:hover { text-decoration: underline; }
+
+        /* ─── CTA FINAL ─── */
+        .cta-section { padding: 8rem 0; text-align: center; }
+        .cta-inner { max-width: 680px; margin: 0 auto; }
+        .cta-section h2 { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.9rem,4vw,2.8rem); letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.1rem; }
+        .cta-section p { color: var(--text2); font-size: 1rem; line-height: 1.78; margin-bottom: 2.75rem; }
+        .cta-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+        /* ─── FOOTER ─── */
+        footer {
+            position: relative; z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 4rem 0 2.5rem;
+            background: var(--bg);
+        }
+        .footer-inner { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .footer-brand {}
+        .footer-brand .footer-logo { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
+        .footer-brand p { font-size: 0.82rem; color: var(--text3); line-height: 1.75; max-width: 270px; }
+        .footer-col h4 { font-family: var(--font-mono); font-size: 0.61rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text2); margin-bottom: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 0.55rem; }
+        .footer-col a { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text3); text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--accent); }
+        .footer-bottom { padding-top: 2rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+        .footer-copy { font-family: var(--font-mono); font-size: 0.61rem; color: var(--text3); }
+
+        /* ─── I18N hide/show ─── */
+        [data-lang] { display: none; }
+        .lang-pt [data-lang="pt"] { display: revert; }
+        .lang-en [data-lang="en"] { display: revert; }
+
+        /* inline i18n spans */
+        span[data-lang], a[data-lang], div[data-lang] { display: none; }
+        .lang-pt span[data-lang="pt"],
+        .lang-pt a[data-lang="pt"],
+        .lang-pt div[data-lang="pt"] { display: revert; }
+        .lang-en span[data-lang="en"],
+        .lang-en a[data-lang="en"],
+        .lang-en div[data-lang="en"] { display: revert; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1024px) {
+            .footer-inner { grid-template-columns: 1fr 1fr 1fr; }
+            .footer-brand { grid-column: 1 / -1; }
+        }
+        @media (max-width: 960px) {
+            nav { padding: 1rem 1.5rem; }
+            .hamburger { display: flex; }
+            .nav-right { position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: rgba(6,13,20,0.97); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; display: none; }
+            .nav-right.open { display: flex; }
+            .nav-menu { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+            .nav-menu a { padding: 0.7rem 0; display: block; font-size: 0.78rem; }
+            .lang-switcher { margin-top: 0.5rem; align-self: flex-start; }
+            .nav-cta { text-align: center; margin-top: 0.75rem; }
+            .product-grid { grid-template-columns: 1fr 1fr; }
+            .features-grid, .audience-grid { grid-template-columns: 1fr; }
+            .consulting-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .sources-grid { grid-template-columns: repeat(3, 1fr); }
+            .steps-grid { grid-template-columns: 1fr 1fr; }
+            .pipeline-line { display: none; }
+            .stats-bar { flex-wrap: wrap; }
+            .stat-item { min-width: 50%; border-right: none; border-bottom: 1px solid var(--border); }
+            .footer-inner { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .hero-title { font-size: 2.5rem; }
+            .container { padding: 0 1.25rem; }
+            .hero { padding: 7rem 1.25rem 4rem; }
+            .stat-item { min-width: 100%; }
+            .product-grid { grid-template-columns: 1fr; }
+            .steps-grid, .sources-grid { grid-template-columns: 1fr 1fr; }
+            .footer-inner { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-<body>
-<a href="#main" class="skip-link">Skip to content</a>
+<body class="lang-pt">
 
-<!-- ── NAV ── -->
-<nav id="nav" aria-label="Main navigation">
-    <div class="nav-left">
-        <a href="#" class="nav-logo" aria-label="PulseDataLabs — home">
-            <img src="assets/logo-full.png" alt="PulseDataLabs" style="height:24px" onerror="this.style.display='none'">
-            <span class="nav-logo-text">Pulse<span>Data</span>Labs</span>
-        </a>
+<a href="#main" class="skip-link" data-lang="pt">Pular para o conteúdo</a>
+<a href="#main" class="skip-link" data-lang="en">Skip to content</a>
+
+<!-- ─── NAV ─── -->
+<nav id="main-nav" aria-label="Navegação principal">
+    <a href="#" class="nav-logo" aria-label="PulseDataLabs — início">
+        <img src="assets/logo-full.png" alt="PulseDataLabs" style="height:36px;width:auto;object-fit:contain;">
+    </a>
+
+    <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+
+    <div class="nav-right" id="nav-right">
         <ul class="nav-menu" id="nav-menu" role="list">
-            <li><a href="#produtos" data-i18n="nav.products">Produtos</a></li>
-            <li><a href="#fontes" data-i18n="nav.coverage">Cobertura</a></li>
-            <li><a href="#como-funciona" data-i18n="nav.pipeline">Pipeline</a></li>
-            <li><a href="#precos" data-i18n="nav.pricing">Preços</a></li>
-            <li><a href="mailto:contact@pulsedatalabs.com" class="nav-cta" data-i18n="nav.cta">Falar com Vendas ↗</a></li>
+            <li>
+                <a href="#produtos" data-lang="pt">Produtos</a>
+                <a href="#produtos" data-lang="en">Products</a>
+            </li>
+            <li>
+                <a href="#fontes" data-lang="pt">Cobertura</a>
+                <a href="#fontes" data-lang="en">Coverage</a>
+            </li>
+            <li>
+                <a href="#consultoria" data-lang="pt">Consultoria</a>
+                <a href="#consultoria" data-lang="en">Consulting</a>
+            </li>
+            <li>
+                <a href="#como-funciona" data-lang="pt">Pipeline</a>
+                <a href="#como-funciona" data-lang="en">Pipeline</a>
+            </li>
         </ul>
-    </div>
-    <div class="nav-right">
-        <div class="lang-switcher" role="group" aria-label="Language selector">
-            <button class="lang-btn active" data-lang="pt" onclick="setLang('pt')">PT</button>
-            <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+
+        <div class="lang-switcher" role="group" aria-label="Idioma">
+            <button class="lang-btn active" id="btn-pt" aria-pressed="true">PT</button>
+            <button class="lang-btn" id="btn-en" aria-pressed="false">EN</button>
         </div>
-        <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
-            <span></span><span></span><span></span>
-        </button>
+
+        <a href="mailto:pulsedatalabs@gmail.com" class="nav-cta" data-lang="pt">Fale Conosco ↗</a>
+        <a href="mailto:pulsedatalabs@gmail.com" class="nav-cta" data-lang="en">Contact Us ↗</a>
     </div>
 </nav>
 
-<!-- ── HERO ── -->
+<!-- ─── HERO ─── -->
 <section class="hero" id="main">
     <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
     <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
@@ -457,92 +590,146 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
 
     <div class="hero-badge">
         <span class="status-dot" aria-hidden="true"></span>
-        <span data-i18n="hero.badge">Pipelines ativos · Entrega diária</span>
+        <span data-lang="pt">Pipelines ativos · Entrega diária</span>
+        <span data-lang="en">Live pipelines · Daily delivery</span>
     </div>
 
-    <div class="hero-logo" aria-hidden="true">
-        <img src="assets/logo-full.png" alt="" style="height:140px" onerror="this.style.display='none'">
+    <div class="hero-logo-wrap" aria-hidden="true">
+        <img src="assets/logo-full.png" alt="" class="hero-logo-img">
     </div>
+
+    <p class="hero-eyebrow">
+        <span data-lang="pt">Infraestrutura de Dados Financeiros</span>
+        <span data-lang="en">Financial Data Infrastructure</span>
+    </p>
 
     <h1 class="hero-title">
-        <span data-i18n="hero.title1">Dados financeiros</span><br>
-        <span class="accent" data-i18n="hero.title2">de nível institucional</span><br>
-        <span class="stroke" data-i18n="hero.title3">em escala</span>
+        <span class="line1" data-lang="pt">Dados que o<br>mercado financeiro</span>
+        <span class="line2" data-lang="pt">realmente usa.</span>
+        <span class="line1" data-lang="en">Financial data<br>infrastructure</span>
+        <span class="line2" data-lang="en">at scale.</span>
     </h1>
 
-    <p class="hero-subtitle" data-i18n="hero.subtitle">Confiável · Estruturado · Pronto para o mercado</p>
-
-    <p class="hero-description" data-i18n="hero.desc">
-        A PulseDataLabs entrega <strong>dados financeiros institucionais</strong> para gestoras, bancos e fintechs.
-        Coleta automatizada, normalização e entrega diária de preços de mercado,
-        indicadores econômicos e ratings de crédito — direto das fontes oficiais.
+    <p class="hero-description">
+        <span data-lang="pt">
+            A PulseDataLabs entrega <strong>dados financeiros institucionais</strong> para gestoras, bancos e fintechs.
+            Coleta automatizada, normalização e entrega diária de preços de mercado,
+            indicadores econômicos e ratings de crédito — diretamente das fontes oficiais.
+        </span>
+        <span data-lang="en">
+            PulseDataLabs delivers <strong>institutional-grade financial data</strong> to investment firms, banks and fintech teams.
+            Automated collection, normalization and daily delivery of market prices,
+            economic indicators and credit ratings — from the most trusted official sources.
+        </span>
     </p>
 
     <div class="hero-ctas">
-        <a href="#produtos" class="btn-primary" data-i18n="hero.cta1">Explorar Produtos</a>
-        <a href="#precos" class="btn-secondary" data-i18n="hero.cta2">Ver Planos</a>
+        <a href="#produtos" class="btn-primary" data-lang="pt">Conhecer os Produtos</a>
+        <a href="#consultoria" class="btn-secondary" data-lang="pt">Consultoria</a>
+        <a href="#produtos" class="btn-primary" data-lang="en">Explore Products</a>
+        <a href="#consultoria" class="btn-secondary" data-lang="en">Consulting Services</a>
     </div>
-
-    <a href="#fontes" class="hero-scroll" aria-label="Rolar para baixo">
-        <div class="scroll-line"></div>
-    </a>
 </section>
 
-<!-- ── TICKER ── -->
+<!-- ─── TICKER ─── -->
 <div class="ticker-strip" aria-hidden="true">
-    <div class="ticker-track"></div>
+    <div class="ticker-track">
+        <span class="ticker-item"><span class="dot"></span>SELIC <span class="val">14.75%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IPCA 12m <span class="val">5.48%</span></span>
+        <span class="ticker-item"><span class="dot"></span>USD/BRL <span class="val">5.81</span> <span class="up">▲ 0.4%</span></span>
+        <span class="ticker-item"><span class="dot"></span>CDI <span class="val">14.65%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IBOVESPA <span class="val">137,280</span> <span class="up">▲ 0.8%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IMA-B <span class="val">4,214.30</span></span>
+        <span class="ticker-item"><span class="dot"></span>PIB 2024 <span class="val">+3.4%</span></span>
+        <span class="ticker-item"><span class="dot"></span>NTN-B 2035 <span class="val">IPCA+7.2%</span></span>
+        <span class="ticker-item"><span class="dot"></span>PTAX <span class="val">5.8043</span></span>
+        <span class="ticker-item"><span class="dot"></span>IGP-M 12m <span class="val">6.20%</span></span>
+        <span class="ticker-item"><span class="dot"></span>SELIC <span class="val">14.75%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IPCA 12m <span class="val">5.48%</span></span>
+        <span class="ticker-item"><span class="dot"></span>USD/BRL <span class="val">5.81</span> <span class="up">▲ 0.4%</span></span>
+        <span class="ticker-item"><span class="dot"></span>CDI <span class="val">14.65%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IBOVESPA <span class="val">137,280</span> <span class="up">▲ 0.8%</span></span>
+        <span class="ticker-item"><span class="dot"></span>IMA-B <span class="val">4,214.30</span></span>
+        <span class="ticker-item"><span class="dot"></span>PIB 2024 <span class="val">+3.4%</span></span>
+        <span class="ticker-item"><span class="dot"></span>NTN-B 2035 <span class="val">IPCA+7.2%</span></span>
+        <span class="ticker-item"><span class="dot"></span>PTAX <span class="val">5.8043</span></span>
+        <span class="ticker-item"><span class="dot"></span>IGP-M 12m <span class="val">6.20%</span></span>
+    </div>
 </div>
 
-<!-- ── STATS BAR ── -->
+<!-- ─── STATS BAR ─── -->
 <div class="stats-bar" role="region" aria-label="Métricas">
     <div class="stat-item">
-        <span class="stat-value">2</span>
-        <span class="stat-label" data-i18n="stats.feeds">Feeds de Dados</span>
+        <span class="stat-value">3</span>
+        <span class="stat-label" data-lang="pt">Produtos de Dados</span>
+        <span class="stat-label" data-lang="en">Data Products</span>
     </div>
     <div class="stat-item">
         <span class="stat-value">5<span>+</span></span>
-        <span class="stat-label" data-i18n="stats.sources">Fontes Oficiais</span>
+        <span class="stat-label" data-lang="pt">Fontes Oficiais</span>
+        <span class="stat-label" data-lang="en">Official Sources</span>
     </div>
     <div class="stat-item">
-        <span class="stat-value">50<span>+</span></span>
-        <span class="stat-label" data-i18n="stats.scrapers">Scrapers Ativos</span>
+        <span class="stat-value">20<span>+</span></span>
+        <span class="stat-label" data-lang="pt">Scrapers Ativos</span>
+        <span class="stat-label" data-lang="en">Active Scrapers</span>
     </div>
     <div class="stat-item">
         <span class="stat-value">99<span>%</span></span>
-        <span class="stat-label" data-i18n="stats.sla">Uptime SLA</span>
+        <span class="stat-label" data-lang="pt">Disponibilidade</span>
+        <span class="stat-label" data-lang="en">Uptime</span>
     </div>
     <div class="stat-item">
-        <span class="stat-value" data-i18n="stats.cadence">Diária</span>
-        <span class="stat-label" data-i18n="stats.cadenceLabel">Cadência de Entrega</span>
+        <span class="stat-value">
+            <span data-lang="pt">Diária</span>
+            <span data-lang="en">Daily</span>
+        </span>
+        <span class="stat-label" data-lang="pt">Cadência de Entrega</span>
+        <span class="stat-label" data-lang="en">Delivery Cadence</span>
     </div>
 </div>
 
-<!-- ── PRODUTOS ── -->
-<section id="produtos" class="section-pad" aria-label="Produtos">
+<!-- ─── PRODUTOS ─── -->
+<section id="produtos" class="section-pad" aria-labelledby="produtos-title">
     <div class="container">
-        <div class="section-label fade-up" data-i18n="products.label">Feeds de Dados</div>
-        <h2 class="section-title fade-up" data-i18n="products.title">Nossos Produtos</h2>
-        <p class="section-desc fade-up" data-i18n="products.desc">Pipelines estruturados e confiáveis, construídos para consumo institucional — normalizados, versionados e entregues diariamente.</p>
+        <div class="section-eyebrow fade-up">
+            <span data-lang="pt">Produtos</span>
+            <span data-lang="en">Products</span>
+        </div>
+        <h2 class="section-title fade-up" id="produtos-title">
+            <span data-lang="pt">Nossos Produtos de Dados</span>
+            <span data-lang="en">Our Data Products</span>
+        </h2>
+        <p class="section-desc fade-up">
+            <span data-lang="pt">Pipelines estruturados e confiáveis, construídos para consumo institucional — normalizados, versionados e entregues diariamente.</span>
+            <span data-lang="en">Structured, reliable data pipelines built for institutional consumption — normalized, versioned and delivered daily.</span>
+        </p>
 
         <div class="product-grid">
-            <div class="card fade-up">
-                <div class="card-accent" aria-hidden="true"></div>
-                <div class="product-header">
-                    <div class="product-icon"><img src="assets/pulseflat-logo.png" alt="PulseFlat" style="width:28px;height:28px"></div>
-                    <div>
-                        <div class="product-name">PulseFlat</div>
-                        <div class="product-tag">Pipeline de Dados de Mercado · BCB · ANBIMA · B3 · CVM · IBGE</div>
-                    </div>
+            <!-- PulseFlat -->
+            <div class="product-card fade-up">
+                <div class="product-icon-wrap">
+                    <img src="assets/logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
                 </div>
-                <p class="product-desc" data-i18n="pulseflat.desc">
-                    Coleta automatizada e diária de preços de mercado, indicadores macroeconômicos, taxas de juros, câmbio, fundos de investimento e muito mais — direto das autoridades regulatórias oficiais. Dados estruturados e normalizados, entregues como CSV limpo, prontos para integração imediata.
+                <div class="product-name">PulseFlat</div>
+                <div class="product-tagline">
+                    <span data-lang="pt">Pipeline de Dados de Mercado · BCB · ANBIMA · B3 · CVM · IBGE</span>
+                    <span data-lang="en">Market Data Pipeline · BCB · ANBIMA · B3 · CVM · IBGE</span>
+                </div>
+                <p class="product-desc">
+                    <span data-lang="pt">
+                        Coleta diária automatizada de preços de mercado, indicadores macroeconômicos, taxas de juros, câmbio, fundos de investimento e muito mais — direto das autoridades oficiais. Dados estruturados e normalizados entregues em CSV limpo, prontos para integração imediata.
+                    </span>
+                    <span data-lang="en">
+                        Daily automated collection of market prices, macroeconomic indicators, interest rates, FX, investment funds and more — sourced directly from official market authorities. Structured, normalized data delivered as clean CSV, ready for immediate integration.
+                    </span>
                 </p>
                 <div class="pill-group">
-                    <span class="pill">CSV</span>
-                    <span class="pill" data-i18n="pill.daily">Diário</span>
-                    <span class="pill" data-i18n="pill.versioned">Versionado</span>
+                    <span class="pill accent">CSV</span>
+                    <span class="pill">Daily</span>
+                    <span class="pill">Versioned</span>
                     <span class="pill">Python</span>
-                    <span class="pill">REST-ready</span>
+                    <span class="pill">GitHub Actions</span>
                 </div>
                 <div class="link-row">
                     <a href="https://github.com/PulseDataLabs/PulseFlat" target="_blank" rel="noopener">
@@ -551,26 +738,33 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                     </a>
                     <a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank" rel="noopener">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                        <span data-i18n="link.docs">Documentação</span>
+                        <span data-lang="pt">Documentação</span>
+                        <span data-lang="en">Documentation</span>
                     </a>
                 </div>
             </div>
 
-            <div class="card fade-up" style="transition-delay:.1s">
-                <div class="card-accent" aria-hidden="true"></div>
-                <div class="product-header">
-                    <div class="product-icon"><img src="assets/pulseratings-logo.png" alt="PulseRatings" style="width:28px;height:28px"></div>
-                    <div>
-                        <div class="product-name">PulseRatings</div>
-                        <div class="product-tag" data-i18n="pulseratings.tag">Inteligência de Risco de Crédito · S&P · Moody's · Fitch</div>
-                    </div>
+            <!-- PulseRatings -->
+            <div class="product-card ratings-card fade-up" style="transition-delay:.1s">
+                <div class="product-icon-wrap">
+                    <img src="assets/logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
                 </div>
-                <p class="product-desc" data-i18n="pulseratings.desc">
-                    Monitoramento automatizado e histórico consolidado de ratings de crédito corporativos e soberanos das três principais agências globais. Acompanhe upgrades, downgrades e watchlists em um único dataset estruturado, atualizado diariamente.
+                <div class="product-name">PulseRatings</div>
+                <div class="product-tagline">
+                    <span data-lang="pt">Inteligência de Crédito · S&P · Moody's · Fitch</span>
+                    <span data-lang="en">Credit Risk Intelligence · S&P · Moody's · Fitch</span>
+                </div>
+                <p class="product-desc">
+                    <span data-lang="pt">
+                        Monitoramento automatizado e histórico consolidado de ratings de crédito corporativos e soberanos das três principais agências mundiais. Acompanhe upgrades, downgrades e mudanças de perspectiva em um único dataset estruturado, atualizado diariamente.
+                    </span>
+                    <span data-lang="en">
+                        Automated monitoring and consolidated historical record of corporate and sovereign credit ratings from the world's three major agencies. Track upgrades, downgrades and watchlist changes in a single structured dataset, updated daily.
+                    </span>
                 </p>
                 <div class="pill-group">
-                    <span class="pill">CSV</span>
-                    <span class="pill" data-i18n="pill.credit">Risco de Crédito</span>
+                    <span class="pill gold">CSV</span>
+                    <span class="pill">Credit Risk</span>
                     <span class="pill">S&P Global</span>
                     <span class="pill">Moody's</span>
                     <span class="pill">Fitch</span>
@@ -582,176 +776,396 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                     </a>
                     <a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank" rel="noopener">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                        <span data-i18n="link.docs">Documentação</span>
+                        <span data-lang="pt">Documentação</span>
+                        <span data-lang="en">Documentation</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- PulseMilhas -->
+            <div class="product-card milhas-card fade-up" style="transition-delay:.2s">
+                <div class="product-icon-wrap">
+                    <img src="assets/logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
+                </div>
+                <div class="product-name">PulseMilhas</div>
+                <div class="product-tagline">
+                    <span data-lang="pt">Pipeline de Preços de Milhas · Smiles · Latam Pass · TudoAzul</span>
+                    <span data-lang="en">Miles Price Pipeline · Smiles · Latam Pass · TudoAzul</span>
+                </div>
+                <p class="product-desc">
+                    <span data-lang="pt">
+                        Coleta automatizada e histórico estruturado de preços de milhas dos principais programas de fidelidade do Brasil. Monitore a cotação do ponto em cada programa e identifique o melhor momento para comprar ou transferir milhas.
+                    </span>
+                    <span data-lang="en">
+                        Automated collection and structured history of miles prices from Brazil's main loyalty programs. Monitor the price per point in each program and identify the best time to buy or transfer miles.
+                    </span>
+                </p>
+                <div class="pill-group">
+                    <span class="pill green">CSV</span>
+                    <span class="pill">Daily</span>
+                    <span class="pill">Smiles</span>
+                    <span class="pill">Latam Pass</span>
+                    <span class="pill">TudoAzul</span>
+                </div>
+                <div class="link-row">
+                    <a href="https://github.com/PulseDataLabs/PulseMilhas" target="_blank" rel="noopener">
+                        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                    <a href="https://pulsedatalabs.github.io/PulseMilhas/" target="_blank" rel="noopener">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <span data-lang="pt">Documentação</span>
+                        <span data-lang="en">Documentation</span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<!-- ── FONTES ── -->
-<section id="fontes" class="section-pad alt-bg" aria-label="Cobertura de dados">
+<section id="fontes" class="section-pad alt-bg" aria-labelledby="fontes-title">
     <div class="container">
-        <div class="section-label fade-up" data-i18n="coverage.label">Cobertura</div>
-        <h2 class="section-title fade-up" data-i18n="coverage.title">Fontes Oficiais Primárias</h2>
-        <p class="section-desc fade-up" data-i18n="coverage.desc">Dados coletados diretamente das fontes primárias — as mesmas autoridades em que confiam as maiores gestoras e instituições financeiras do país.</p>
+        <div class="section-eyebrow fade-up">
+            <span data-lang="pt">Cobertura</span>
+            <span data-lang="en">Coverage</span>
+        </div>
+        <h2 class="section-title fade-up" id="fontes-title">
+            <span data-lang="pt">Fontes Oficiais Primárias</span>
+            <span data-lang="en">Primary Official Sources</span>
+        </h2>
+        <p class="section-desc fade-up">
+            <span data-lang="pt">Dados coletados diretamente das fontes primárias — as mesmas autoridades confiadas pelas maiores gestoras e instituições financeiras.</span>
+            <span data-lang="en">Data collected directly from primary sources — the same authorities trusted by the largest investment firms and financial institutions.</span>
+        </p>
 
         <div class="sources-grid">
             <div class="source-card fade-up">
                 <div class="source-abbr">BCB</div>
-                <div class="source-name" data-i18n="source.bcb">Banco Central do Brasil</div>
+                <div class="source-name" data-lang="pt">Banco Central do Brasil</div>
+                <div class="source-name" data-lang="en">Central Bank of Brazil</div>
                 <div class="source-examples">
                     <span class="source-example">PTAX · Câmbio</span>
-                    <span class="source-example">SGS · Séries temporais</span>
+                    <span class="source-example">Séries SGS</span>
                     <span class="source-example">SELIC · CDI</span>
                 </div>
             </div>
             <div class="source-card fade-up" style="transition-delay:.05s">
                 <div class="source-abbr">ANBIMA</div>
-                <div class="source-name" data-i18n="source.anbima">Assoc. Brasileira das Entidades dos Mercados Financeiro e de Capitais</div>
+                <div class="source-name" data-lang="pt">Assoc. Brasileira de Mercado de Capitais</div>
+                <div class="source-name" data-lang="en">Brazilian Capital Markets Assoc.</div>
                 <div class="source-examples">
-                    <span class="source-example" data-i18n="src.indicators">Indicadores de mercado</span>
+                    <span class="source-example" data-lang="pt">Indicadores de mercado</span>
+                    <span class="source-example" data-lang="en">Market indicators</span>
                     <span class="source-example">IMA · IDA · IHF</span>
-                    <span class="source-example" data-i18n="src.bonds">Títulos públicos</span>
+                    <span class="source-example" data-lang="pt">Títulos públicos</span>
+                    <span class="source-example" data-lang="en">Public bonds</span>
                 </div>
             </div>
             <div class="source-card fade-up" style="transition-delay:.1s">
                 <div class="source-abbr">B3</div>
-                <div class="source-name" data-i18n="source.b3">Bolsa de Valores Brasileira</div>
+                <div class="source-name" data-lang="pt">Bolsa de Valores Brasileira</div>
+                <div class="source-name" data-lang="en">Brazilian Stock Exchange</div>
                 <div class="source-examples">
-                    <span class="source-example">FIIs · ETFs</span>
-                    <span class="source-example" data-i18n="src.futures">Ajuste de futuros</span>
-                    <span class="source-example">BM&F · Taxas</span>
+                    <span class="source-example" data-lang="pt">FIIs · ETFs</span>
+                    <span class="source-example" data-lang="en">REITs · ETFs</span>
+                    <span class="source-example" data-lang="pt">Ajuste de futuros</span>
+                    <span class="source-example" data-lang="en">Futures settlement</span>
+                    <span class="source-example">BM&F · DI</span>
                 </div>
             </div>
             <div class="source-card fade-up" style="transition-delay:.15s">
                 <div class="source-abbr">CVM</div>
-                <div class="source-name" data-i18n="source.cvm">Comissão de Valores Mobiliários</div>
+                <div class="source-name" data-lang="pt">Comissão de Valores Mobiliários</div>
+                <div class="source-name" data-lang="en">Securities & Exchange Commission</div>
                 <div class="source-examples">
-                    <span class="source-example" data-i18n="src.funds">Cadastro de fundos</span>
-                    <span class="source-example" data-i18n="src.reports">Informes diários</span>
-                    <span class="source-example" data-i18n="src.regulatory">Dados regulatórios</span>
+                    <span class="source-example" data-lang="pt">Cadastro de fundos</span>
+                    <span class="source-example" data-lang="en">Fund registry</span>
+                    <span class="source-example" data-lang="pt">Informes diários</span>
+                    <span class="source-example" data-lang="en">Daily reports</span>
+                    <span class="source-example" data-lang="pt">Dados regulatórios</span>
+                    <span class="source-example" data-lang="en">Regulatory data</span>
                 </div>
             </div>
             <div class="source-card fade-up" style="transition-delay:.2s">
                 <div class="source-abbr">IBGE</div>
-                <div class="source-name" data-i18n="source.ibge">Instituto Brasileiro de Geografia e Estatística</div>
+                <div class="source-name" data-lang="pt">Instituto Brasileiro de Geografia e Estatística</div>
+                <div class="source-name" data-lang="en">National Statistics Institute</div>
                 <div class="source-examples">
                     <span class="source-example">IPCA · INPC</span>
                     <span class="source-example">PIB · SIDRA</span>
-                    <span class="source-example" data-i18n="src.macro">Indicadores macro</span>
+                    <span class="source-example" data-lang="pt">Indicadores macro</span>
+                    <span class="source-example" data-lang="en">Macro indicators</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ── PARA QUEM ── -->
-<section id="audiencia" class="section-pad" aria-label="Para quem é">
+<!-- ─── PARA QUEM É ─── -->
+<section id="audiencia" class="section-pad" aria-labelledby="audiencia-title">
     <div class="container">
-        <div class="section-label fade-up" data-i18n="audience.label">Clientes</div>
-        <h2 class="section-title fade-up" data-i18n="audience.title">Feito para profissionais do mercado financeiro</h2>
-        <p class="section-desc fade-up" data-i18n="audience.desc">De equipes quant em hedge funds a engenheiros de dados em fintechs — a PulseDataLabs potencializa fluxos críticos em todo o ecossistema financeiro.</p>
+        <div class="section-eyebrow fade-up">
+            <span data-lang="pt">Clientes</span>
+            <span data-lang="en">Clients</span>
+        </div>
+        <h2 class="section-title fade-up" id="audiencia-title">
+            <span data-lang="pt">Construído para profissionais financeiros</span>
+            <span data-lang="en">Built for financial professionals</span>
+        </h2>
+        <p class="section-desc fade-up">
+            <span data-lang="pt">De equipes quant em hedge funds a engenheiros de dados em fintechs — a PulseDataLabs alimenta fluxos de trabalho críticos em todo o setor financeiro.</span>
+            <span data-lang="en">From quant teams at hedge funds to data engineers at fintechs — PulseDataLabs powers critical workflows across the financial industry.</span>
+        </p>
 
         <div class="audience-grid">
             <div class="audience-card fade-up">
                 <div class="audience-icon">🏛️</div>
-                <div class="audience-title" data-i18n="aud1.title">Gestoras e Bancos</div>
-                <p class="audience-desc" data-i18n="aud1.desc">Dados confiáveis e estruturados para gestão de carteiras, sistemas de risco e relatórios de compliance.</p>
+                <div class="audience-title">
+                    <span data-lang="pt">Gestoras & Bancos</span>
+                    <span data-lang="en">Investment Firms & Banks</span>
+                </div>
+                <p class="audience-desc">
+                    <span data-lang="pt">Dados confiáveis e estruturados para gestão de portfólio, sistemas de risco e relatórios de compliance.</span>
+                    <span data-lang="en">Reliable, structured data to power portfolio management, risk systems and compliance reporting.</span>
+                </p>
                 <ul class="audience-uses">
-                    <li data-i18n="aud1.u1">Monitoramento de risco de crédito com histórico completo de ratings</li>
-                    <li data-i18n="aud1.u2">Indicadores macro diários para modelos de risco</li>
-                    <li data-i18n="aud1.u3">Performance de fundos e benchmarking</li>
-                    <li data-i18n="aud1.u4">Datasets para relatórios regulatórios</li>
+                    <li data-lang="pt">Monitoramento de risco de crédito com histórico completo</li>
+                    <li data-lang="pt">Indicadores macro diários para modelos de risco</li>
+                    <li data-lang="pt">Performance de fundos e dados de benchmark</li>
+                    <li data-lang="pt">Datasets para relatórios regulatórios</li>
+                    <li data-lang="en">Credit risk monitoring with full rating history</li>
+                    <li data-lang="en">Daily macro indicators for risk models</li>
+                    <li data-lang="en">Fund performance and benchmarking data</li>
+                    <li data-lang="en">Regulatory reporting datasets</li>
                 </ul>
             </div>
             <div class="audience-card fade-up" style="transition-delay:.08s">
                 <div class="audience-icon">⚡</div>
-                <div class="audience-title" data-i18n="aud2.title">Fintechs e Times de Dados</div>
-                <p class="audience-desc" data-i18n="aud2.desc">Integre dados de qualidade institucional ao seu produto ou pipeline sem precisar construir tudo do zero.</p>
+                <div class="audience-title">
+                    <span data-lang="pt">Fintechs & Equipes de Dados</span>
+                    <span data-lang="en">Fintech & Data Teams</span>
+                </div>
+                <p class="audience-desc">
+                    <span data-lang="pt">Integre dados de qualidade institucional no seu produto ou pipeline sem construir do zero.</span>
+                    <span data-lang="en">Integrate institutional-quality data into your product or pipeline without building from scratch.</span>
+                </p>
                 <ul class="audience-uses">
-                    <li data-i18n="aud2.u1">Integração plug-and-play via CSV ou API</li>
-                    <li data-i18n="aud2.u2">Séries históricas para modelos de Machine Learning</li>
-                    <li data-i18n="aud2.u3">Infraestrutura de backtesting para estratégias quantitativas</li>
-                    <li data-i18n="aud2.u4">Dashboards em tempo real e alertas automatizados</li>
+                    <li data-lang="pt">Integração plug-and-play via CSV ou API</li>
+                    <li data-lang="pt">Séries históricas para modelos de ML</li>
+                    <li data-lang="pt">Infraestrutura de backtesting para estratégias quant</li>
+                    <li data-lang="pt">Dashboards e alertas em tempo real</li>
+                    <li data-lang="en">Plug-and-play data integration via CSV or API</li>
+                    <li data-lang="en">Historical time series for ML models</li>
+                    <li data-lang="en">Backtesting infrastructure for quant strategies</li>
+                    <li data-lang="en">Real-time dashboards and alerting</li>
                 </ul>
             </div>
             <div class="audience-card fade-up" style="transition-delay:.16s">
                 <div class="audience-icon">📊</div>
-                <div class="audience-title" data-i18n="aud3.title">Analistas e Gestores de Portfólio</div>
-                <p class="audience-desc" data-i18n="aud3.desc">Acesse dados estruturados e atualizados no Excel, Power BI ou Python — sem downloads manuais.</p>
+                <div class="audience-title">
+                    <span data-lang="pt">Analistas & Gestores de Portfólio</span>
+                    <span data-lang="en">Analysts & Portfolio Managers</span>
+                </div>
+                <p class="audience-desc">
+                    <span data-lang="pt">Acesse dados estruturados e atualizados no Excel, Power BI ou Python — sem downloads manuais.</span>
+                    <span data-lang="en">Access structured, up-to-date data in Excel, Power BI or Python — without manual downloads.</span>
+                </p>
                 <ul class="audience-uses">
-                    <li data-i18n="aud3.u1">Feeds com atualização automática para Excel e Power BI</li>
-                    <li data-i18n="aud3.u2">Análise de tendências macroeconômicas</li>
-                    <li data-i18n="aud3.u3">Comparação de fundos de investimento</li>
-                    <li data-i18n="aud3.u4">Rastreamento de mudanças em ratings de crédito</li>
+                    <li data-lang="pt">Feeds com atualização automática para Excel/Power BI</li>
+                    <li data-lang="pt">Análise de tendências macroeconômicas</li>
+                    <li data-lang="pt">Comparação de fundos de investimento</li>
+                    <li data-lang="pt">Rastreamento de mudanças de rating de crédito</li>
+                    <li data-lang="en">Auto-refreshing Excel and Power BI feeds</li>
+                    <li data-lang="en">Macroeconomic trend analysis</li>
+                    <li data-lang="en">Investment fund comparison datasets</li>
+                    <li data-lang="en">Credit rating change tracking</li>
                 </ul>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ── DIFERENCIAIS ── -->
-<section id="diferenciais" class="section-pad alt-bg" aria-label="Por que PulseDataLabs">
+<!-- ─── DIFERENCIAIS ─── -->
+<section id="diferenciais" class="section-pad alt-bg" aria-labelledby="diferenciais-title">
     <div class="container">
-        <div class="section-label fade-up" data-i18n="why.label">Diferenciais</div>
-        <h2 class="section-title fade-up" data-i18n="why.title">Por que PulseDataLabs?</h2>
-        <p class="section-desc fade-up" data-i18n="why.desc">Engenharia de dados concebida para escala, precisão e integração sem atrito — sem a complexidade dos fornecedores tradicionais de dados.</p>
+        <div class="section-eyebrow fade-up">
+            <span data-lang="pt">Diferenciais</span>
+            <span data-lang="en">Why PulseDataLabs</span>
+        </div>
+        <h2 class="section-title fade-up" id="diferenciais-title">
+            <span data-lang="pt">Por que escolher a PulseDataLabs?</span>
+            <span data-lang="en">Why PulseDataLabs?</span>
+        </h2>
+        <p class="section-desc fade-up">
+            <span data-lang="pt">Engenharia de dados projetada para escala, precisão e integração sem atrito — sem a complexidade dos fornecedores tradicionais de dados.</span>
+            <span data-lang="en">Data engineering designed for scale, accuracy and seamless integration — without the complexity of traditional data vendors.</span>
+        </p>
 
         <div class="features-grid">
             <div class="feature-card fade-up">
                 <div class="feature-icon">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
                 </div>
-                <div class="feature-title" data-i18n="feat1.title">Dados como Código</div>
-                <p class="feature-desc" data-i18n="feat1.desc">Arquivos flat versionados com snapshots históricos completos e imutáveis. Cada ponto de dado é rastreável, auditável e reproduzível — essencial para fluxos de compliance.</p>
+                <div class="feature-title">
+                    <span data-lang="pt">Dados como Código</span>
+                    <span data-lang="en">Data as Code</span>
+                </div>
+                <p class="feature-desc">
+                    <span data-lang="pt">Arquivos versionados com snapshots históricos completos e imutáveis. Cada ponto de dado é rastreável, auditável e reproduzível — essencial para fluxos com conformidade regulatória.</span>
+                    <span data-lang="en">Versioned flat files with complete, immutable historical snapshots. Every data point is traceable, auditable and reproducible — critical for compliance-grade workflows.</span>
+                </p>
             </div>
+
             <div class="feature-card fade-up" style="transition-delay:.07s">
                 <div class="feature-icon">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
                 </div>
-                <div class="feature-title" data-i18n="feat2.title">Arquitetura Serverless</div>
-                <p class="feature-desc" data-i18n="feat2.desc">Pipelines orientados a eventos com alta disponibilidade e zero overhead de infraestrutura. Escala automaticamente e entrega consistentemente — todos os dias úteis, sem exceção.</p>
+                <div class="feature-title">
+                    <span data-lang="pt">Arquitetura Serverless</span>
+                    <span data-lang="en">Serverless Architecture</span>
+                </div>
+                <p class="feature-desc">
+                    <span data-lang="pt">Pipelines orientados a eventos com alta disponibilidade e sem overhead de infraestrutura. Escala automaticamente e entrega com consistência — todo dia útil, sem exceção.</span>
+                    <span data-lang="en">Event-driven pipelines with high availability and no infrastructure overhead. Scales automatically and delivers consistently — every business day, without exception.</span>
+                </p>
             </div>
+
             <div class="feature-card fade-up" style="transition-delay:.14s">
                 <div class="feature-icon">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 </div>
-                <div class="feature-title" data-i18n="feat3.title">Integração em Minutos</div>
-                <p class="feature-desc" data-i18n="feat3.desc">Consuma dados diretamente em Python, R, Excel ou Power BI. Sem SDK proprietário, sem fricção de autenticação, sem lock-in. Integração em minutos, não meses.</p>
+                <div class="feature-title">
+                    <span data-lang="pt">Integração em Uma Linha</span>
+                    <span data-lang="en">One-Line Integration</span>
+                </div>
+                <p class="feature-desc">
+                    <span data-lang="pt">Consuma dados diretamente em Python, R, Excel ou Power BI. Sem SDK proprietário, sem fricção de autenticação, sem lock-in de fornecedor. Integração em minutos, não meses.</span>
+                    <span data-lang="en">Consume data directly in Python, R, Excel or Power BI. No proprietary SDK, no authentication friction, no vendor lock-in. Integration in minutes, not months.</span>
+                </p>
             </div>
+
             <div class="feature-card fade-up" style="transition-delay:.21s">
                 <div class="feature-icon">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 </div>
-                <div class="feature-title" data-i18n="feat4.title">Fontes Primárias Oficiais</div>
-                <p class="feature-desc" data-i18n="feat4.desc">Sem agregadores, sem intermediários. Dados coletados diretamente de bancos centrais, bolsas e órgãos reguladores — as mesmas fontes usadas pelas maiores instituições financeiras do mundo.</p>
+                <div class="feature-title">
+                    <span data-lang="pt">Fontes Oficiais Primárias</span>
+                    <span data-lang="en">Primary Official Sources</span>
+                </div>
+                <p class="feature-desc">
+                    <span data-lang="pt">Sem agregadores, sem intermediários. Dados coletados diretamente de bancos centrais, bolsas e órgãos reguladores — as mesmas fontes usadas pelas maiores instituições financeiras do mundo.</span>
+                    <span data-lang="en">No aggregators, no middlemen. Data collected directly from central banks, exchanges and regulatory bodies — the same sources used by major financial institutions worldwide.</span>
+                </p>
             </div>
+
             <div class="feature-card fade-up" style="transition-delay:.28s">
                 <div class="feature-icon">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
                 </div>
-                <div class="feature-title" data-i18n="feat5.title">Expansão Global</div>
-                <p class="feature-desc" data-i18n="feat5.desc">Iniciando com o mercado financeiro mais sofisticado da América Latina e expandindo globalmente. Construído desde o primeiro dia para suportar múltiplas regiões, moedas e ambientes regulatórios.</p>
+                <div class="feature-title">
+                    <span data-lang="pt">Roadmap de Expansão Global</span>
+                    <span data-lang="en">Global Expansion Roadmap</span>
+                </div>
+                <p class="feature-desc">
+                    <span data-lang="pt">Começando pelo mercado financeiro mais sofisticado da América Latina e expandindo globalmente. Construído desde o primeiro dia para suportar múltiplas regiões e ambientes regulatórios.</span>
+                    <span data-lang="en">Starting with LatAm's most sophisticated financial market and expanding globally. Built from day one to support multiple regions, currencies and regulatory environments.</span>
+                </p>
             </div>
+
             <div class="feature-card fade-up" style="transition-delay:.35s">
                 <div class="feature-icon">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <div class="feature-title" data-i18n="feat6.title">Entrega com SLA Garantido</div>
-                <p class="feature-desc" data-i18n="feat6.desc">Janelas de entrega comprometidas alinhadas ao fechamento do mercado. Planos Enterprise incluem SLA dedicado, dashboards de monitoramento e resposta prioritária a incidentes.</p>
+                <div class="feature-title">
+                    <span data-lang="pt">Entrega Pontual e Confiável</span>
+                    <span data-lang="en">SLA-Backed Delivery</span>
+                </div>
+                <p class="feature-desc">
+                    <span data-lang="pt">Janelas de entrega comprometidas alinhadas ao fechamento de mercado. Monitoramento contínuo e resposta rápida a incidentes garantem que seus processos não sejam interrompidos.</span>
+                    <span data-lang="en">Committed delivery windows aligned to market close. Continuous monitoring and rapid incident response ensure your processes are never interrupted.</span>
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ── COMO FUNCIONA ── -->
-<section id="como-funciona" class="section-pad" aria-label="Como funciona">
+<!-- ─── CONSULTORIA ─── -->
+<section id="consultoria" class="consulting-section" aria-labelledby="consultoria-title">
     <div class="container">
-        <div class="section-label fade-up" data-i18n="pipeline.label">Pipeline</div>
-        <h2 class="section-title fade-up" data-i18n="pipeline.title">Como funciona</h2>
-        <p class="section-desc fade-up" data-i18n="pipeline.desc">Pipeline totalmente automatizado, de ponta a ponta — da coleta agendada ao dado limpo e consumível — executado todos os dias úteis.</p>
+        <div class="consulting-grid">
+            <div class="consulting-intro">
+                <div class="section-eyebrow fade-up">
+                    <span data-lang="pt">Consultoria</span>
+                    <span data-lang="en">Consulting</span>
+                </div>
+                <h2 class="section-title fade-up" id="consultoria-title">
+                    <span data-lang="pt">Expertise em dados financeiros para o seu negócio</span>
+                    <span data-lang="en">Financial data expertise for your business</span>
+                </h2>
+                <p class="section-desc fade-up">
+                    <span data-lang="pt">Além dos nossos produtos de dados, oferecemos consultoria especializada para equipes que precisam estruturar, integrar ou escalar sua infraestrutura de dados financeiros.</span>
+                    <span data-lang="en">Beyond our data products, we offer specialized consulting for teams that need to structure, integrate or scale their financial data infrastructure.</span>
+                </p>
+
+                <div class="consulting-services fade-up" style="transition-delay:.1s">
+                    <div class="service-item">
+                        <div class="service-num">01</div>
+                        <div class="service-content">
+                            <div class="service-title" data-lang="pt">Engenharia de Dados Financeiros</div>
+                            <div class="service-title" data-lang="en">Financial Data Engineering</div>
+                            <div class="service-desc" data-lang="pt">Design e implementação de pipelines para captura, normalização e entrega de dados de mercado em ambientes institucionais.</div>
+                            <div class="service-desc" data-lang="en">Design and implementation of pipelines for market data capture, normalization and delivery in institutional environments.</div>
+                        </div>
+                    </div>
+                    <div class="service-item">
+                        <div class="service-num">02</div>
+                        <div class="service-content">
+                            <div class="service-title" data-lang="pt">Integração de Fontes Regulatórias</div>
+                            <div class="service-title" data-lang="en">Regulatory Source Integration</div>
+                            <div class="service-desc" data-lang="pt">Conexão e automação de coleta de dados de BCB, CVM, ANBIMA, B3 e IBGE para sistemas proprietários.</div>
+                            <div class="service-desc" data-lang="en">Connection and automation of data collection from BCB, CVM, ANBIMA, B3 and IBGE into proprietary systems.</div>
+                        </div>
+                    </div>
+                    <div class="service-item">
+                        <div class="service-num">03</div>
+                        <div class="service-content">
+                            <div class="service-title" data-lang="pt">Arquitetura de Dados para Fintechs</div>
+                            <div class="service-title" data-lang="en">Data Architecture for Fintechs</div>
+                            <div class="service-desc" data-lang="pt">Estruturação de repositórios de dados, schemas normalizados e fluxos de ingestão otimizados para produtos financeiros.</div>
+                            <div class="service-desc" data-lang="en">Data repository structuring, normalized schemas and optimized ingestion flows for financial products.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consulting-cta-box fade-up" style="transition-delay:.15s">
+                <h3 data-lang="pt">Vamos conversar sobre o seu projeto</h3>
+                <h3 data-lang="en">Let's talk about your project</h3>
+                <p data-lang="pt">
+                    Cada projeto é único. Conte-nos sobre seus desafios de dados — pipeline legado, integração com fontes regulatórias, normalização de séries históricas ou automação de relatórios — e montamos uma solução sob medida.
+                </p>
+                <p data-lang="en">
+                    Every project is unique. Tell us about your data challenges — legacy pipelines, regulatory source integration, historical series normalization or report automation — and we'll build a tailored solution.
+                </p>
+                <a href="mailto:pulsedatalabs@gmail.com?subject=Consultoria%20PulseDataLabs" class="btn-gold" data-lang="pt">Solicitar Consultoria ↗</a>
+                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseDataLabs%20Consulting" class="btn-gold" data-lang="en">Request Consulting ↗</a>
+                <a href="mailto:pulsedatalabs@gmail.com" class="email-link">pulsedatalabs@gmail.com</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── COMO FUNCIONA ─── -->
+<section id="como-funciona" class="section-pad alt-bg" aria-labelledby="pipeline-title">
+    <div class="container">
+        <div class="section-eyebrow fade-up">Pipeline</div>
+        <h2 class="section-title fade-up" id="pipeline-title">
+            <span data-lang="pt">Como funciona</span>
+            <span data-lang="en">How it works</span>
+        </h2>
+        <p class="section-desc fade-up">
+            <span data-lang="pt">Pipeline totalmente automatizado de ponta a ponta — da coleta agendada até dados limpos e prontos para consumo — rodando todos os dias úteis.</span>
+            <span data-lang="en">Fully automated, end-to-end pipeline — from scheduled collection to clean, consumable data — running every business day.</span>
+        </p>
 
         <div class="pipeline-wrapper fade-up">
             <div class="pipeline-line" aria-hidden="true"></div>
@@ -759,384 +1173,227 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                 <div class="step-item">
                     <div class="step-num">01</div>
                     <div class="step-icon-box" aria-hidden="true">⏰</div>
-                    <div class="step-title" data-i18n="step1.title">Agendamento</div>
-                    <div class="step-desc" data-i18n="step1.desc">Pipelines automatizados são acionados em horários pré-definidos, alinhados ao fechamento do mercado em diferentes fusos horários.</div>
+                    <div class="step-title" data-lang="pt">Agendamento</div>
+                    <div class="step-title" data-lang="en">Scheduling</div>
+                    <div class="step-desc" data-lang="pt">Pipelines automatizados disparam em horários definidos, alinhados ao fechamento de mercado em diferentes fusos horários.</div>
+                    <div class="step-desc" data-lang="en">Automated pipelines trigger at pre-defined times, aligned to market close windows across time zones.</div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">02</div>
                     <div class="step-icon-box" aria-hidden="true">🔗</div>
-                    <div class="step-title" data-i18n="step2.title">Coleta</div>
-                    <div class="step-desc" data-i18n="step2.desc">Scrapers dedicados acessam APIs oficiais e fontes autoritativas, extraindo dados brutos com rastreamento completo de proveniência.</div>
+                    <div class="step-title" data-lang="pt">Coleta</div>
+                    <div class="step-title" data-lang="en">Collection</div>
+                    <div class="step-desc" data-lang="pt">Scrapers dedicados acessam APIs oficiais e fontes autoritativas, extraindo dados brutos com rastreamento completo de proveniência.</div>
+                    <div class="step-desc" data-lang="en">Dedicated scrapers access official APIs and authoritative sources, extracting raw data with full provenance tracking.</div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">03</div>
                     <div class="step-icon-box" aria-hidden="true">📄</div>
-                    <div class="step-title" data-i18n="step3.title">Normalização</div>
-                    <div class="step-desc" data-i18n="step3.desc">Dados são padronizados, validados e estruturados — schema consistente, encodings normalizados, tratamento de nulos e formatação de datas.</div>
+                    <div class="step-title" data-lang="pt">Normalização</div>
+                    <div class="step-title" data-lang="en">Normalization</div>
+                    <div class="step-desc" data-lang="pt">Dados são padronizados, validados e estruturados — schema consistente, encodings normalizados, tratamento de nulos e datas.</div>
+                    <div class="step-desc" data-lang="en">Data is standardized, validated and structured — consistent schema, normalized encodings, null handling and date formatting.</div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">04</div>
                     <div class="step-icon-box" aria-hidden="true">📥</div>
-                    <div class="step-title" data-i18n="step4.title">Entrega</div>
-                    <div class="step-desc" data-i18n="step4.desc">Datasets limpos entregues via download direto, endpoint REST ou repositório versionado — prontos para consumo imediato.</div>
+                    <div class="step-title" data-lang="pt">Entrega</div>
+                    <div class="step-title" data-lang="en">Delivery</div>
+                    <div class="step-desc" data-lang="pt">Datasets limpos entregues via download direto, endpoint REST ou repositório versionado — prontos para consumo imediato.</div>
+                    <div class="step-desc" data-lang="en">Clean datasets delivered via direct download, REST endpoint or versioned repository — ready for immediate consumption.</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ── PRICING ── -->
-<section id="precos" class="section-pad alt-bg" aria-label="Preços">
-    <div class="container">
-        <div class="section-label fade-up" data-i18n="pricing.label">Planos</div>
-        <h2 class="section-title fade-up" data-i18n="pricing.title">Preços simples e transparentes</h2>
-        <p class="section-desc fade-up" data-i18n="pricing.desc">Escolha o plano ideal para sua equipe. Todos os planos incluem entrega diária, saída em CSV estruturado e suporte padrão.</p>
-
-        <div class="pricing-grid">
-            <div class="pricing-card fade-up">
-                <div class="pricing-tier" data-i18n="plan1.tier">Starter</div>
-                <div class="pricing-name" data-i18n="plan1.name">Essencial</div>
-                <p class="pricing-desc" data-i18n="plan1.desc">Para analistas individuais e pequenas equipes que estão começando com dados financeiros estruturados.</p>
-                <div class="pricing-price">
-                    <span class="price-currency">US$</span>
-                    <span class="price-amount">149</span>
-                </div>
-                <div class="price-period" data-i18n="plan.period">/ mês, cobrado anualmente</div>
-                <div class="price-note" data-i18n="plan1.note">ou US$ 179/mês no plano mensal</div>
-                <div class="pricing-divider"></div>
-                <ul class="pricing-features">
-                    <li><span class="check">✓</span> <span data-i18n="plan1.f1">1 feed de dados (PulseFlat ou PulseRatings)</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan1.f2">Entrega diária em CSV</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan1.f3">Até 5 fontes de dados</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan1.f4">Histórico de 12 meses</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan1.f5">Acesso via download direto</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan1.f6">Suporte por e-mail (SLA 48h)</span></li>
-                    <li class="dim"><span class="minus">–</span> <span data-i18n="plan1.f7">Acesso via API REST</span></li>
-                    <li class="dim"><span class="minus">–</span> <span data-i18n="plan1.f8">Agendamento personalizado</span></li>
-                    <li class="dim"><span class="minus">–</span> <span data-i18n="plan1.f9">Gerente de conta dedicado</span></li>
-                </ul>
-                <a href="mailto:contact@pulsedatalabs.com?subject=Plano Starter" class="btn-plan btn-plan-outline" data-i18n="plan.start">Começar Agora</a>
-            </div>
-
-            <div class="pricing-card featured fade-up" style="transition-delay:.1s">
-                <div class="pricing-badge" data-i18n="plan.popular">Mais Popular</div>
-                <div class="pricing-tier">Pro</div>
-                <div class="pricing-name" data-i18n="plan2.name">Profissional</div>
-                <p class="pricing-desc" data-i18n="plan2.desc">Para equipes de investimento, analistas e empresas fintech que precisam de cobertura abrangente e acesso via API.</p>
-                <div class="pricing-price">
-                    <span class="price-currency">US$</span>
-                    <span class="price-amount">499</span>
-                </div>
-                <div class="price-period" data-i18n="plan.period">/ mês, cobrado anualmente</div>
-                <div class="price-note" data-i18n="plan2.note">ou US$ 599/mês no plano mensal</div>
-                <div class="pricing-divider"></div>
-                <ul class="pricing-features">
-                    <li><span class="check">✓</span> <span data-i18n="plan2.f1">Todos os feeds de dados inclusos</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan2.f2">CSV diário + acesso via API REST</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan2.f3">Todas as fontes disponíveis</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan2.f4">Histórico completo</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan2.f5">Agendamento personalizado de entrega</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan2.f6">Suporte prioritário (SLA 24h)</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan2.f7">Até 5 assentos por equipe</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan2.f8">Documentação de schema de dados</span></li>
-                    <li class="dim"><span class="minus">–</span> <span data-i18n="plan2.f9">Gerente de conta dedicado</span></li>
-                </ul>
-                <a href="mailto:contact@pulsedatalabs.com?subject=Plano Pro" class="btn-plan btn-plan-filled" data-i18n="plan.start">Começar Agora</a>
-            </div>
-
-            <div class="pricing-card fade-up" style="transition-delay:.2s">
-                <div class="pricing-tier">Enterprise</div>
-                <div class="pricing-name" data-i18n="plan3.name">Personalizado</div>
-                <p class="pricing-desc" data-i18n="plan3.desc">Para bancos, gestoras e instituições que precisam de SLA contratado, cobertura customizada e suporte dedicado.</p>
-                <div class="pricing-price">
-                    <span class="price-amount" style="font-size:2rem" data-i18n="plan3.price">Custom</span>
-                </div>
-                <div class="price-period" data-i18n="plan3.period">sob medida para seu volume e necessidades</div>
-                <div class="price-note">&nbsp;</div>
-                <div class="pricing-divider"></div>
-                <ul class="pricing-features">
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f1">Tudo do plano Pro</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f2">SLA de uptime contratado</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f3">Fontes de dados customizadas sob demanda</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f4">Assentos ilimitados para a equipe</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f5">Gerente de conta dedicado</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f6">Infraestrutura de entrega privada</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f7">Documentação para compliance</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f8">Acesso ao roadmap multi-região</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="plan3.f9">SLA de resposta a incidentes em 4h</span></li>
-                </ul>
-                <a href="mailto:contact@pulsedatalabs.com?subject=Plano Enterprise" class="btn-plan btn-plan-ghost" data-i18n="plan3.cta">Falar com Vendas</a>
-            </div>
-        </div>
-
-        <p class="pricing-note fade-up" data-i18n="pricing.note">
-            Preços em USD. Cobrança anual economiza até 17%.<br>
-            Precisa de uma proposta personalizada? <a href="mailto:contact@pulsedatalabs.com">Entre em contato com nossa equipe comercial</a> — respondemos em até 1 dia útil.
-        </p>
-    </div>
-</section>
-
-<!-- ── CTA ── -->
-<section class="cta-section" aria-label="Começar">
+<!-- ─── CTA FINAL ─── -->
+<section class="cta-section" aria-label="Contato">
     <div class="container">
         <div class="cta-inner fade-up">
-            <div class="section-label" style="justify-content:center;max-width:260px;margin:0 auto 1rem" data-i18n="cta.label">Entre em contato</div>
-            <h2 data-i18n="cta.title">Pronto para começar?</h2>
-            <p data-i18n="cta.desc">Fale com nossa equipe e descubra como a PulseDataLabs pode potencializar seus fluxos de dados com informações financeiras confiáveis, estruturadas e de qualidade institucional — entregues diariamente.</p>
+            <div class="section-eyebrow" style="justify-content:center; max-width:300px; margin:0 auto 1.2rem;">
+                <span data-lang="pt">Pronto para começar?</span>
+                <span data-lang="en">Get in touch</span>
+            </div>
+            <h2>
+                <span data-lang="pt">Transforme sua infraestrutura<br>de dados financeiros</span>
+                <span data-lang="en">Ready to power your<br>financial data workflows?</span>
+            </h2>
+            <p>
+                <span data-lang="pt">
+                    Fale com nossa equipe e descubra como a PulseDataLabs pode alimentar seus fluxos de trabalho com dados financeiros confiáveis e estruturados — entregues diariamente, com qualidade institucional.
+                </span>
+                <span data-lang="en">
+                    Talk to our team and discover how PulseDataLabs can power your data workflows with reliable, structured financial data — delivered daily, at institutional quality.
+                </span>
+            </p>
             <div class="cta-buttons">
-                <a href="mailto:contact@pulsedatalabs.com?subject=PulseFlat inquiry" class="btn-primary" data-i18n="cta.btn1">Solicitar Acesso — PulseFlat</a>
-                <a href="mailto:contact@pulsedatalabs.com?subject=PulseRatings inquiry" class="btn-secondary" data-i18n="cta.btn2">Solicitar Acesso — PulseRatings</a>
+                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseFlat%20-%20Acesso" class="btn-primary" data-lang="pt">
+                    Acessar PulseFlat
+                </a>
+                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseRatings%20-%20Acesso" class="btn-secondary" data-lang="pt">
+                    Acessar PulseRatings
+                </a>
+                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseFlat%20Inquiry" class="btn-primary" data-lang="en">
+                    Request PulseFlat Access
+                </a>
+                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseRatings%20Inquiry" class="btn-secondary" data-lang="en">
+                    Request PulseRatings Access
+                </a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ── FOOTER ── -->
+<!-- ─── FOOTER ─── -->
 <footer>
     <div class="container">
         <div class="footer-inner">
             <div class="footer-brand">
-            <img src="assets/logo.png" alt="PulseDataLabs" style="height:24px" onerror="this.style.display='none'">
-                <p data-i18n="footer.brand">Infraestrutura de dados financeiros para o mercado institucional. Coleta automatizada, normalização e entrega diária de dados das fontes oficiais mais confiáveis do mercado.</p>
+                <div class="footer-logo">
+                    <img src="assets/logo-full.png" alt="PulseDataLabs" style="height:32px;width:auto;object-fit:contain;">
+                </div>
+                <p data-lang="pt">Infraestrutura de dados financeiros para o mercado brasileiro e além. Coleta, normalização e entrega automatizada de dados de mercado das fontes oficiais mais confiáveis.</p>
+                <p data-lang="en">Financial data infrastructure for the Brazilian market and beyond. Automated collection, normalization and delivery of market data from the most trusted official sources.</p>
             </div>
             <div class="footer-col">
-                <h4 data-i18n="footer.products">Produtos</h4>
+                <h4 data-lang="pt">Produtos</h4>
+                <h4 data-lang="en">Products</h4>
                 <ul>
-                    <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank" rel="noopener">PulseFlat</a></li>
-                    <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank" rel="noopener">PulseRatings</a></li>
-                    <li><a href="#precos" data-i18n="footer.pricing">Planos e Preços</a></li>
+                    <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank">PulseFlat</a></li>
+                    <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank">PulseRatings</a></li>
+                    <li><a href="https://pulsedatalabs.github.io/PulseMilhas/" target="_blank">PulseMilhas</a></li>
+                    <li><a href="https://github.com/PulseDataLabs" target="_blank">GitHub</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4 data-i18n="footer.company">Empresa</h4>
+                <h4 data-lang="pt">Empresa</h4>
+                <h4 data-lang="en">Company</h4>
                 <ul>
-                    <li><a href="mailto:contact@pulsedatalabs.com" data-i18n="footer.contact">Contato</a></li>
-                    <li><a href="mailto:contact@pulsedatalabs.com?subject=Enterprise Plan" data-i18n="footer.sales">Vendas Enterprise</a></li>
-                    <li><a href="https://github.com/PulseDataLabs" target="_blank" rel="noopener">GitHub</a></li>
+                    <li>
+                        <a href="mailto:pulsedatalabs@gmail.com" data-lang="pt">Contato</a>
+                        <a href="mailto:pulsedatalabs@gmail.com" data-lang="en">Contact</a>
+                    </li>
+                    <li>
+                        <a href="mailto:pulsedatalabs@gmail.com?subject=Consultoria" data-lang="pt">Consultoria</a>
+                        <a href="mailto:pulsedatalabs@gmail.com?subject=Consulting" data-lang="en">Consulting</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/PulseDataLabs" target="_blank" data-lang="pt">Código Aberto</a>
+                        <a href="https://github.com/PulseDataLabs" target="_blank" data-lang="en">Open Source</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 data-lang="pt">Fontes de Dados</h4>
+                <h4 data-lang="en">Data Sources</h4>
+                <ul>
+                    <li><a href="#fontes">BCB</a></li>
+                    <li><a href="#fontes">ANBIMA</a></li>
+                    <li><a href="#fontes">B3 · CVM · IBGE</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <span class="footer-copy" data-i18n="footer.copy">&copy; 2026 PulseDataLabs. Todos os direitos reservados.</span>
-            <span class="footer-copy" data-i18n="footer.tagline">Infraestrutura de Dados Financeiros</span>
+            <span class="footer-copy" data-lang="pt">&copy; 2026 PulseDataLabs. Todos os direitos reservados.</span>
+            <span class="footer-copy" data-lang="en">&copy; 2026 PulseDataLabs. All rights reserved.</span>
+            <span class="footer-copy" data-lang="pt">Infraestrutura de Dados Financeiros</span>
+            <span class="footer-copy" data-lang="en">Financial Data Infrastructure</span>
         </div>
     </div>
 </footer>
 
 <script>
-/* ── TRANSLATIONS ── */
-const i18n = {
-    pt: {
-        "nav.products":"Produtos","nav.coverage":"Cobertura","nav.pipeline":"Pipeline","nav.pricing":"Preços","nav.cta":"Falar com Vendas ↗",
-        "hero.badge":"Pipelines ativos · Entrega diária","hero.title1":"Dados financeiros","hero.title2":"de nível institucional","hero.title3":"em escala",
-        "hero.subtitle":"Confiável · Estruturado · Pronto para o mercado",
-        "hero.desc":"A PulseDataLabs entrega <strong>dados financeiros institucionais</strong> para gestoras, bancos e fintechs. Coleta automatizada, normalização e entrega diária de preços de mercado, indicadores econômicos e ratings de crédito — direto das fontes oficiais.",
-        "hero.cta1":"Explorar Produtos","hero.cta2":"Ver Planos",
-        "stats.feeds":"Feeds de Dados","stats.sources":"Fontes Oficiais","stats.scrapers":"Scrapers Ativos","stats.sla":"Uptime SLA","stats.cadence":"Diária","stats.cadenceLabel":"Cadência de Entrega",
-        "products.label":"Feeds de Dados","products.title":"Nossos Produtos","products.desc":"Pipelines estruturados e confiáveis, construídos para consumo institucional — normalizados, versionados e entregues diariamente.",
-        "pulseflat.desc":"Coleta automatizada e diária de preços de mercado, indicadores macroeconômicos, taxas de juros, câmbio, fundos de investimento e muito mais — direto das autoridades regulatórias oficiais. Dados estruturados e normalizados, entregues como CSV limpo, prontos para integração imediata.",
-        "pulseratings.tag":"Inteligência de Risco de Crédito · S&P · Moody's · Fitch",
-        "pulseratings.desc":"Monitoramento automatizado e histórico consolidado de ratings de crédito corporativos e soberanos das três principais agências globais. Acompanhe upgrades, downgrades e watchlists em um único dataset estruturado, atualizado diariamente.",
-        "pill.daily":"Diário","pill.versioned":"Versionado","pill.credit":"Risco de Crédito","link.docs":"Documentação",
-        "coverage.label":"Cobertura","coverage.title":"Fontes Oficiais Primárias","coverage.desc":"Dados coletados diretamente das fontes primárias — as mesmas autoridades em que confiam as maiores gestoras e instituições financeiras do país.",
-        "source.bcb":"Banco Central do Brasil","source.anbima":"Assoc. Brasileira dos Mercados Financeiro e de Capitais","source.b3":"Bolsa de Valores Brasileira","source.cvm":"Comissão de Valores Mobiliários","source.ibge":"Instituto Brasileiro de Geografia e Estatística",
-        "src.indicators":"Indicadores de mercado","src.bonds":"Títulos públicos","src.futures":"Ajuste de futuros","src.funds":"Cadastro de fundos","src.reports":"Informes diários","src.regulatory":"Dados regulatórios","src.macro":"Indicadores macro",
-        "audience.label":"Clientes","audience.title":"Feito para profissionais do mercado financeiro","audience.desc":"De equipes quant em hedge funds a engenheiros de dados em fintechs — a PulseDataLabs potencializa fluxos críticos em todo o ecossistema financeiro.",
-        "aud1.title":"Gestoras e Bancos","aud1.desc":"Dados confiáveis e estruturados para gestão de carteiras, sistemas de risco e relatórios de compliance.",
-        "aud1.u1":"Monitoramento de risco de crédito com histórico completo de ratings","aud1.u2":"Indicadores macro diários para modelos de risco","aud1.u3":"Performance de fundos e benchmarking","aud1.u4":"Datasets para relatórios regulatórios",
-        "aud2.title":"Fintechs e Times de Dados","aud2.desc":"Integre dados de qualidade institucional ao seu produto ou pipeline sem precisar construir tudo do zero.",
-        "aud2.u1":"Integração plug-and-play via CSV ou API","aud2.u2":"Séries históricas para modelos de Machine Learning","aud2.u3":"Infraestrutura de backtesting para estratégias quantitativas","aud2.u4":"Dashboards em tempo real e alertas automatizados",
-        "aud3.title":"Analistas e Gestores de Portfólio","aud3.desc":"Acesse dados estruturados e atualizados no Excel, Power BI ou Python — sem downloads manuais.",
-        "aud3.u1":"Feeds com atualização automática para Excel e Power BI","aud3.u2":"Análise de tendências macroeconômicas","aud3.u3":"Comparação de fundos de investimento","aud3.u4":"Rastreamento de mudanças em ratings de crédito",
-        "why.label":"Diferenciais","why.title":"Por que PulseDataLabs?","why.desc":"Engenharia de dados concebida para escala, precisão e integração sem atrito — sem a complexidade dos fornecedores tradicionais de dados.",
-        "feat1.title":"Dados como Código","feat1.desc":"Arquivos flat versionados com snapshots históricos completos e imutáveis. Cada ponto de dado é rastreável, auditável e reproduzível — essencial para fluxos de compliance.",
-        "feat2.title":"Arquitetura Serverless","feat2.desc":"Pipelines orientados a eventos com alta disponibilidade e zero overhead de infraestrutura. Escala automaticamente e entrega consistentemente — todos os dias úteis, sem exceção.",
-        "feat3.title":"Integração em Minutos","feat3.desc":"Consuma dados diretamente em Python, R, Excel ou Power BI. Sem SDK proprietário, sem fricção de autenticação, sem lock-in. Integração em minutos, não meses.",
-        "feat4.title":"Fontes Primárias Oficiais","feat4.desc":"Sem agregadores, sem intermediários. Dados coletados diretamente de bancos centrais, bolsas e órgãos reguladores — as mesmas fontes usadas pelas maiores instituições financeiras do mundo.",
-        "feat5.title":"Expansão Global","feat5.desc":"Iniciando com o mercado financeiro mais sofisticado da América Latina e expandindo globalmente. Construído desde o primeiro dia para suportar múltiplas regiões, moedas e ambientes regulatórios.",
-        "feat6.title":"Entrega com SLA Garantido","feat6.desc":"Janelas de entrega comprometidas alinhadas ao fechamento do mercado. Planos Enterprise incluem SLA dedicado, dashboards de monitoramento e resposta prioritária a incidentes.",
-        "pipeline.label":"Pipeline","pipeline.title":"Como funciona","pipeline.desc":"Pipeline totalmente automatizado, de ponta a ponta — da coleta agendada ao dado limpo e consumível — executado todos os dias úteis.",
-        "step1.title":"Agendamento","step1.desc":"Pipelines automatizados são acionados em horários pré-definidos, alinhados ao fechamento do mercado em diferentes fusos horários.",
-        "step2.title":"Coleta","step2.desc":"Scrapers dedicados acessam APIs oficiais e fontes autoritativas, extraindo dados brutos com rastreamento completo de proveniência.",
-        "step3.title":"Normalização","step3.desc":"Dados são padronizados, validados e estruturados — schema consistente, encodings normalizados, tratamento de nulos e formatação de datas.",
-        "step4.title":"Entrega","step4.desc":"Datasets limpos entregues via download direto, endpoint REST ou repositório versionado — prontos para consumo imediato.",
-        "pricing.label":"Planos","pricing.title":"Preços simples e transparentes","pricing.desc":"Escolha o plano ideal para sua equipe. Todos os planos incluem entrega diária, saída em CSV estruturado e suporte padrão.",
-        "plan1.tier":"Starter","plan1.name":"Essencial","plan1.desc":"Para analistas individuais e pequenas equipes que estão começando com dados financeiros estruturados.",
-        "plan.period":"/ mês, cobrado anualmente","plan1.note":"ou US$ 179/mês no plano mensal",
-        "plan1.f1":"1 feed de dados (PulseFlat ou PulseRatings)","plan1.f2":"Entrega diária em CSV","plan1.f3":"Até 5 fontes de dados","plan1.f4":"Histórico de 12 meses","plan1.f5":"Acesso via download direto","plan1.f6":"Suporte por e-mail (SLA 48h)","plan1.f7":"Acesso via API REST","plan1.f8":"Agendamento personalizado","plan1.f9":"Gerente de conta dedicado",
-        "plan.start":"Começar Agora","plan.popular":"Mais Popular",
-        "plan2.name":"Profissional","plan2.desc":"Para equipes de investimento, analistas e empresas fintech que precisam de cobertura abrangente e acesso via API.","plan2.note":"ou US$ 599/mês no plano mensal",
-        "plan2.f1":"Todos os feeds de dados inclusos","plan2.f2":"CSV diário + acesso via API REST","plan2.f3":"Todas as fontes disponíveis","plan2.f4":"Histórico completo","plan2.f5":"Agendamento personalizado de entrega","plan2.f6":"Suporte prioritário (SLA 24h)","plan2.f7":"Até 5 assentos por equipe","plan2.f8":"Documentação de schema de dados","plan2.f9":"Gerente de conta dedicado",
-        "plan3.name":"Personalizado","plan3.desc":"Para bancos, gestoras e instituições que precisam de SLA contratado, cobertura customizada e suporte dedicado.","plan3.price":"Custom","plan3.period":"sob medida para seu volume e necessidades",
-        "plan3.f1":"Tudo do plano Pro","plan3.f2":"SLA de uptime contratado","plan3.f3":"Fontes de dados customizadas sob demanda","plan3.f4":"Assentos ilimitados para a equipe","plan3.f5":"Gerente de conta dedicado","plan3.f6":"Infraestrutura de entrega privada","plan3.f7":"Documentação para compliance","plan3.f8":"Acesso ao roadmap multi-região","plan3.f9":"SLA de resposta a incidentes em 4h",
-        "plan3.cta":"Falar com Vendas",
-        "pricing.note":"Preços em USD. Cobrança anual economiza até 17%.<br>Precisa de uma proposta personalizada? <a href=\"mailto:contact@pulsedatalabs.com\">Entre em contato com nossa equipe comercial</a> — respondemos em até 1 dia útil.",
-        "cta.label":"Entre em contato","cta.title":"Pronto para começar?","cta.desc":"Fale com nossa equipe e descubra como a PulseDataLabs pode potencializar seus fluxos de dados com informações financeiras confiáveis, estruturadas e de qualidade institucional — entregues diariamente.","cta.btn1":"Solicitar Acesso — PulseFlat","cta.btn2":"Solicitar Acesso — PulseRatings",
-        "footer.brand":"Infraestrutura de dados financeiros para o mercado institucional. Coleta automatizada, normalização e entrega diária de dados das fontes oficiais mais confiáveis do mercado.","footer.products":"Produtos","footer.pricing":"Planos e Preços","footer.company":"Empresa","footer.contact":"Contato","footer.sales":"Vendas Enterprise","footer.copy":"© 2026 PulseDataLabs. Todos os direitos reservados.","footer.tagline":"Infraestrutura de Dados Financeiros"
-    },
-    en: {
-        "nav.products":"Products","nav.coverage":"Coverage","nav.pipeline":"Pipeline","nav.pricing":"Pricing","nav.cta":"Contact Sales ↗",
-        "hero.badge":"Live pipelines · Daily delivery","hero.title1":"Financial data","hero.title2":"infrastructure","hero.title3":"at scale",
-        "hero.subtitle":"Reliable · Structured · Enterprise-ready",
-        "hero.desc":"PulseDataLabs delivers <strong>institutional-grade financial data</strong> to investment firms, banks and fintech teams. Automated collection, normalization and daily delivery of market prices, economic indicators and credit ratings — from the most trusted official sources.",
-        "hero.cta1":"Explore Products","hero.cta2":"View Pricing",
-        "stats.feeds":"Data Feeds","stats.sources":"Official Sources","stats.scrapers":"Active Scrapers","stats.sla":"Uptime SLA","stats.cadence":"Daily","stats.cadenceLabel":"Delivery Cadence",
-        "products.label":"Data Feeds","products.title":"Our Products","products.desc":"Structured, reliable data pipelines built for institutional consumption — normalized, versioned and delivered daily.",
-        "pulseflat.desc":"Daily automated collection of market prices, macroeconomic indicators, interest rates, FX, investment funds and more — sourced directly from official regulatory authorities. Structured, normalized data delivered as clean CSV, ready for immediate integration.",
-        "pulseratings.tag":"Credit Risk Intelligence · S&P · Moody's · Fitch",
-        "pulseratings.desc":"Automated monitoring and consolidated historical record of corporate and sovereign credit ratings from the world's three major agencies. Track upgrades, downgrades and watchlist changes in a single structured dataset, updated daily.",
-        "pill.daily":"Daily","pill.versioned":"Versioned","pill.credit":"Credit Risk","link.docs":"Documentation",
-        "coverage.label":"Coverage","coverage.title":"Primary Official Sources","coverage.desc":"Data collected directly from primary sources — the same authorities trusted by the largest investment firms and financial institutions.",
-        "source.bcb":"Central Bank of Brazil","source.anbima":"Brazilian Capital Markets Association","source.b3":"Brazilian Stock Exchange","source.cvm":"Securities & Exchange Commission","source.ibge":"National Statistics Institute",
-        "src.indicators":"Market indicators","src.bonds":"Public bonds","src.futures":"Futures settlement","src.funds":"Fund registry","src.reports":"Daily reports","src.regulatory":"Regulatory data","src.macro":"Macro indicators",
-        "audience.label":"Clients","audience.title":"Built for financial professionals","audience.desc":"From quant teams at hedge funds to data engineers at fintechs — PulseDataLabs powers critical workflows across the financial industry.",
-        "aud1.title":"Investment Firms & Banks","aud1.desc":"Reliable, structured data to power portfolio management, risk systems and compliance reporting.",
-        "aud1.u1":"Credit risk monitoring with full rating history","aud1.u2":"Daily macro indicators for risk models","aud1.u3":"Fund performance and benchmarking data","aud1.u4":"Regulatory reporting datasets",
-        "aud2.title":"Fintech & Data Teams","aud2.desc":"Integrate institutional-quality data into your product or pipeline without building from scratch.",
-        "aud2.u1":"Plug-and-play data integration via CSV or API","aud2.u2":"Historical time series for ML models","aud2.u3":"Backtesting infrastructure for quant strategies","aud2.u4":"Real-time dashboards and automated alerting",
-        "aud3.title":"Analysts & Portfolio Managers","aud3.desc":"Access structured, up-to-date data in Excel, Power BI or Python — without manual downloads.",
-        "aud3.u1":"Auto-refreshing Excel and Power BI feeds","aud3.u2":"Macroeconomic trend analysis","aud3.u3":"Investment fund comparison datasets","aud3.u4":"Credit rating change tracking",
-        "why.label":"Differentiators","why.title":"Why PulseDataLabs?","why.desc":"Data engineering designed for scale, accuracy and seamless integration — without the complexity of traditional data vendors.",
-        "feat1.title":"Data as Code","feat1.desc":"Versioned flat files with complete, immutable historical snapshots. Every data point is traceable, auditable and reproducible — critical for compliance-grade workflows.",
-        "feat2.title":"Serverless Architecture","feat2.desc":"Event-driven pipelines with high availability and no infrastructure overhead. Scales automatically and delivers consistently — every business day, without exception.",
-        "feat3.title":"One-Line Integration","feat3.desc":"Consume data directly in Python, R, Excel or Power BI. No proprietary SDK, no authentication friction, no vendor lock-in. Integration in minutes, not months.",
-        "feat4.title":"Primary Official Sources","feat4.desc":"No aggregators, no middlemen. Data collected directly from central banks, exchanges and regulatory bodies — the same sources used by major financial institutions worldwide.",
-        "feat5.title":"Global Expansion Roadmap","feat5.desc":"Starting with LatAm's most sophisticated financial market and expanding globally. Built from day one to support multiple regions, currencies and regulatory environments.",
-        "feat6.title":"SLA-Backed Delivery","feat6.desc":"Committed delivery windows aligned to market close. Enterprise plans include dedicated SLA, monitoring dashboards and priority incident response.",
-        "pipeline.label":"Pipeline","pipeline.title":"How it works","pipeline.desc":"Fully automated, end-to-end pipeline — from scheduled collection to clean, consumable data — running every business day.",
-        "step1.title":"Scheduling","step1.desc":"Automated pipelines trigger at pre-defined times, aligned to market close windows across time zones.",
-        "step2.title":"Collection","step2.desc":"Dedicated scrapers access official APIs and authoritative sources, extracting raw data with full provenance tracking.",
-        "step3.title":"Normalization","step3.desc":"Data is standardized, validated and structured — consistent schema, normalized encodings, null handling and date formatting.",
-        "step4.title":"Delivery","step4.desc":"Clean datasets delivered via direct download, REST endpoint or versioned repository — ready for immediate consumption.",
-        "pricing.label":"Pricing","pricing.title":"Simple, transparent plans","pricing.desc":"Choose the plan that fits your team. All plans include daily data delivery, structured CSV output and standard support.",
-        "plan1.tier":"Starter","plan1.name":"Essential","plan1.desc":"For individual analysts and small teams getting started with structured financial data.",
-        "plan.period":"/ month, billed annually","plan1.note":"or US$ 179/mo billed monthly",
-        "plan1.f1":"1 data feed (PulseFlat or PulseRatings)","plan1.f2":"Daily CSV delivery","plan1.f3":"Up to 5 data sources","plan1.f4":"12-month historical data","plan1.f5":"Direct download access","plan1.f6":"Email support (48h SLA)","plan1.f7":"REST API access","plan1.f8":"Custom delivery schedule","plan1.f9":"Dedicated account manager",
-        "plan.start":"Get Started","plan.popular":"Most Popular",
-        "plan2.name":"Professional","plan2.desc":"For investment teams, analysts and fintech companies that need comprehensive coverage and API access.","plan2.note":"or US$ 599/mo billed monthly",
-        "plan2.f1":"All data feeds included","plan2.f2":"Daily CSV + REST API access","plan2.f3":"All available data sources","plan2.f4":"Full historical archive","plan2.f5":"Custom delivery schedule","plan2.f6":"Priority support (24h SLA)","plan2.f7":"Up to 5 team seats","plan2.f8":"Data schema documentation","plan2.f9":"Dedicated account manager",
-        "plan3.name":"Custom","plan3.desc":"For banks, asset managers and institutions requiring SLA guarantees, custom coverage and dedicated support.","plan3.price":"Custom","plan3.period":"tailored to your volume & needs",
-        "plan3.f1":"Everything in Pro","plan3.f2":"Contracted uptime SLA","plan3.f3":"Custom data sources on request","plan3.f4":"Unlimited team seats","plan3.f5":"Dedicated account manager","plan3.f6":"Private delivery infrastructure","plan3.f7":"Compliance documentation","plan3.f8":"Multi-region roadmap access","plan3.f9":"4h incident response SLA",
-        "plan3.cta":"Talk to Sales",
-        "pricing.note":"All prices in USD. Annual billing saves up to 17%.<br>Need a custom quote? <a href=\"mailto:contact@pulsedatalabs.com\">Contact our sales team</a> — we typically respond within one business day.",
-        "cta.label":"Get in touch","cta.title":"Ready to get started?","cta.desc":"Talk to our team and discover how PulseDataLabs can power your data workflows with reliable, structured financial data — delivered daily, at institutional quality.","cta.btn1":"Request Access — PulseFlat","cta.btn2":"Request Access — PulseRatings",
-        "footer.brand":"Enterprise financial data infrastructure. Automated collection, normalization and daily delivery of market data from the most trusted official sources.","footer.products":"Products","footer.pricing":"Pricing","footer.company":"Company","footer.contact":"Contact","footer.sales":"Enterprise Sales","footer.copy":"© 2026 PulseDataLabs. All rights reserved.","footer.tagline":"Financial Data Infrastructure"
-    }
-};
+(function() {
+    // ─ language switcher ─
+    var body = document.body;
+    var btnPt = document.getElementById('btn-pt');
+    var btnEn = document.getElementById('btn-en');
 
-let currentLang = 'pt';
-
-function setLang(lang) {
-    currentLang = lang;
-    document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
-    document.title = lang === 'pt'
-        ? 'PulseDataLabs — Infraestrutura de Dados Financeiros'
-        : 'PulseDataLabs — Financial Data Infrastructure';
-
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18n[lang][key] !== undefined) {
-            el.innerHTML = i18n[lang][key];
+    function setLang(lang) {
+        if (lang === 'en') {
+            body.classList.remove('lang-pt');
+            body.classList.add('lang-en');
+            btnPt.classList.remove('active');
+            btnEn.classList.add('active');
+            btnPt.setAttribute('aria-pressed', 'false');
+            btnEn.setAttribute('aria-pressed', 'true');
+            document.documentElement.lang = 'en';
+            document.title = 'PulseDataLabs — Financial Data Infrastructure';
+        } else {
+            body.classList.remove('lang-en');
+            body.classList.add('lang-pt');
+            btnEn.classList.remove('active');
+            btnPt.classList.add('active');
+            btnEn.setAttribute('aria-pressed', 'false');
+            btnPt.setAttribute('aria-pressed', 'true');
+            document.documentElement.lang = 'pt-BR';
+            document.title = 'PulseDataLabs — Infraestrutura de Dados Financeiros';
         }
+        try { localStorage.setItem('pdl-lang', lang); } catch(e) {}
+    }
+
+    btnPt.addEventListener('click', function() { setLang('pt'); });
+    btnEn.addEventListener('click', function() { setLang('en'); });
+
+    // restore saved preference
+    try {
+        var saved = localStorage.getItem('pdl-lang');
+        if (saved === 'en') setLang('en');
+    } catch(e) {}
+
+    // ─ hamburger ─
+    var hamburger = document.getElementById('hamburger');
+    var navRight = document.getElementById('nav-right');
+    hamburger.addEventListener('click', function() {
+        var open = navRight.classList.toggle('open');
+        hamburger.classList.toggle('open');
+        hamburger.setAttribute('aria-expanded', open);
+        hamburger.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
     });
-
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-    });
-
-    // Hamburger aria-label
-    const hb = document.getElementById('hamburger');
-    hb.setAttribute('aria-label', lang === 'pt' ? 'Abrir menu' : 'Open menu');
-}
-
-/* ── NAV scroll effect ── */
-const navEl = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-    navEl.classList.toggle('scrolled', window.scrollY > 60);
-}, {passive: true});
-
-/* ── Hamburger ── */
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.getElementById('nav-menu');
-hamburger.addEventListener('click', function() {
-    const open = navMenu.classList.toggle('open');
-    hamburger.classList.toggle('open');
-    hamburger.setAttribute('aria-expanded', open);
-});
-navMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('open');
-        hamburger.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-    });
-});
-
-/* ── Active nav link ── */
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
-if (sections.length && navLinks.length) {
-    new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                navLinks.forEach(link => {
-                    link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
-                });
-            }
+    navRight.querySelectorAll('a[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function() {
+            navRight.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
         });
-    }, {threshold: 0.4}).observe(...[...sections]);
-    sections.forEach(s => {
-        new IntersectionObserver(entries => {
-            entries.forEach(entry => {
+    });
+
+    // ─ nav scroll shrink ─
+    var nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', function() {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ─ active nav link ─
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+    if (sections.length && navLinks.length) {
+        var io = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
                 if (entry.isIntersecting) {
-                    navLinks.forEach(link => {
+                    navLinks.forEach(function(link) {
                         link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
                     });
                 }
             });
-        }, {threshold: 0.4}).observe(s);
-    });
-}
-
-/* ── Fade-up ── */
-const fadeEls = document.querySelectorAll('.fade-up');
-new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
-    });
-}, {threshold: 0.1}).observe(...[...fadeEls]);
-fadeEls.forEach(el => {
-    new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-    }, {threshold: 0.1}).observe(el);
-});
-
-/* ── Market ticker ── */
-(async function loadMarketTicker() {
-    try {
-        const r = await fetch('https://raw.githubusercontent.com/PulseDataLabs/PulseFlat/main/data/market_latest.json');
-        if (!r.ok) return;
-        const data = await r.json();
-        if (!data || !data.length) return;
-
-        const track = document.querySelector('.ticker-track');
-        if (!track) return;
-
-        function renderItem(d) {
-            const arrow = d.type === 'up' ? '▲' : d.type === 'down' ? '▼' : '';
-            const cls = d.type === 'up' ? 'ticker-up' : d.type === 'down' ? 'ticker-dn' : '';
-            const change = d.change ? ` <span class="${cls}">${arrow} ${d.change}</span>` : '';
-            return `<span class="ticker-item"><span class="ticker-dot"></span>${d.label} <span class="ticker-val">${d.value}</span>${change}</span>`;
-        }
-
-        track.innerHTML = data.map(renderItem).join('') + data.map(renderItem).join('');
-    } catch (e) {
-        console.warn('Falha ao carregar market_latest:', e);
+        }, { threshold: 0.35 });
+        sections.forEach(function(s) { io.observe(s); });
     }
+
+    // ─ fade-up ─
+    var fadeEls = document.querySelectorAll('.fade-up');
+    var fadeObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                fadeObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    fadeEls.forEach(function(el) { fadeObs.observe(el); });
 })();
 </script>
+
 </body>
 </html>
