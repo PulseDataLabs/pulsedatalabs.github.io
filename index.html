@@ -199,8 +199,8 @@
 
         .hero-title {
             font-family: var(--font-head); font-weight: 800;
-            font-size: clamp(2.4rem, 5vw, 3.8rem);
-            line-height: 1.08; letter-spacing: -0.035em; margin-bottom: 1.8rem;
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.8rem;
             animation: fadeUp 0.7s ease 0.35s both;
         }
         .hero-title .line1 { display: block; color: var(--text); }
@@ -492,6 +492,11 @@
         [data-lang] { display: none; }
         .lang-pt [data-lang="pt"] { display: revert; }
         .lang-en [data-lang="en"] { display: revert; }
+
+        /* hero title lang spans — must be block when visible */
+        .hero-title span[data-lang] { display: none; }
+        .lang-pt .hero-title span[data-lang="pt"] { display: block; }
+        .lang-en .hero-title span[data-lang="en"] { display: block; }
 
         /* inline i18n spans */
         span[data-lang], a[data-lang], div[data-lang] { display: none; }
