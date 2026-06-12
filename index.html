@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseDataLabs — Infraestrutura de Dados Financeiros</title>
-    <meta name="description" content="Infraestrutura de dados financeiros para o mercado brasileiro. Coleta, normalização e entrega automatizada de preços de mercado, indicadores econômicos e ratings de crédito." />
+    <meta name="description" content="Infraestrutura de dados financeiros para o mercado brasileiro. Coleta, normalização e entrega automatizada de preços de mercado, taxas, indicadores, ratings de crédito, dados de instituições financeiras (IFData) e fluxo B3." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://pulsedatalabs.github.io" />
     <meta property="og:title" content="PulseDataLabs — Infraestrutura de Dados Financeiros" />
-    <meta property="og:description" content="Dados financeiros estruturados entregues diariamente para gestoras, bancos e fintechs." />
+    <meta property="og:description" content="Dados financeiros estruturados, inteligência de crédito, dados bancários e fluxo estrangeiro B3 entregues diariamente para uso institucional." />
     <meta property="og:image" content="https://pulsedatalabs.github.io/assets/logo-full.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
@@ -34,6 +34,10 @@
             --gold2:     #ffd166;
             --green:     #00e5a0;
             --red:       #ff4d6d;
+            --purple:    #a855f7;
+            --purple2:   #c084fc;
+            --orange:    #ff7043;
+            --orange2:   #ff8a65;
             --text:      #e6eef6;
             --text2:     #7a9bb8;
             --text3:     #3d5870;
@@ -314,6 +318,18 @@
         }
         .product-card.milhas-card:hover { border-color: rgba(0,229,160,0.35); }
         .pill.green { border-color: rgba(0,229,160,0.3); color: var(--green); background: rgba(0,229,160,0.06); }
+
+        .product-card.ifdata-card::before {
+            background: linear-gradient(90deg, transparent, var(--purple) 50%, transparent);
+        }
+        .product-card.ifdata-card:hover { border-color: rgba(168,85,247,0.35); }
+        .pill.purple { border-color: rgba(168,85,247,0.3); color: var(--purple2); background: rgba(168,85,247,0.06); }
+
+        .product-card.whales-card::before {
+            background: linear-gradient(90deg, transparent, var(--orange) 50%, transparent);
+        }
+        .product-card.whales-card:hover { border-color: rgba(255,112,67,0.35); }
+        .pill.orange { border-color: rgba(255,112,67,0.3); color: var(--orange2); background: rgba(255,112,67,0.06); }
 
         .product-icon-wrap {
             width: 52px; height: 52px; border-radius: 12px;
@@ -665,17 +681,17 @@
 <!-- ─── STATS BAR ─── -->
 <div class="stats-bar" role="region" aria-label="Métricas">
     <div class="stat-item">
-        <span class="stat-value">3</span>
+        <span class="stat-value">5</span>
         <span class="stat-label" data-lang="pt">Produtos de Dados</span>
         <span class="stat-label" data-lang="en">Data Products</span>
     </div>
     <div class="stat-item">
-        <span class="stat-value">5<span>+</span></span>
+        <span class="stat-value">10<span>+</span></span>
         <span class="stat-label" data-lang="pt">Fontes Oficiais</span>
         <span class="stat-label" data-lang="en">Official Sources</span>
     </div>
     <div class="stat-item">
-        <span class="stat-value">20<span>+</span></span>
+        <span class="stat-value">35<span>+</span></span>
         <span class="stat-label" data-lang="pt">Scrapers Ativos</span>
         <span class="stat-label" data-lang="en">Active Scrapers</span>
     </div>
@@ -714,7 +730,7 @@
             <!-- PulseFlat -->
             <div class="product-card fade-up">
                 <div class="product-icon-wrap">
-                    <img src="assets/logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
+                    <img src="assets/pulseflat-logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
                 </div>
                 <div class="product-name">PulseFlat</div>
                 <div class="product-tagline">
@@ -750,9 +766,9 @@
             </div>
 
             <!-- PulseRatings -->
-            <div class="product-card ratings-card fade-up" style="transition-delay:.1s">
+            <div class="product-card ratings-card fade-up" style="transition-delay:.05s">
                 <div class="product-icon-wrap">
-                    <img src="assets/logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
+                    <img src="assets/pulseratings-logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
                 </div>
                 <div class="product-name">PulseRatings</div>
                 <div class="product-tagline">
@@ -764,7 +780,7 @@
                         Monitoramento automatizado e histórico consolidado de ratings de crédito corporativos e soberanos das três principais agências mundiais. Acompanhe upgrades, downgrades e mudanças de perspectiva em um único dataset estruturado, atualizado diariamente.
                     </span>
                     <span data-lang="en">
-                        Automated monitoring and consolidated historical record of corporate and sovereign credit ratings from the world's three major agencies. Track upgrades, downgrades and watchlist changes in a single structured dataset, updated daily.
+                        Automated monitoring and consolidated historical record of credit ratings from the world's three major agencies. Track upgrades, downgrades and watchlist changes in a single structured dataset, updated daily.
                     </span>
                 </p>
                 <div class="pill-group">
@@ -788,7 +804,7 @@
             </div>
 
             <!-- PulseMilhas -->
-            <div class="product-card milhas-card fade-up" style="transition-delay:.2s">
+            <div class="product-card milhas-card fade-up" style="transition-delay:.1s">
                 <div class="product-icon-wrap">
                     <img src="assets/logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
                 </div>
@@ -818,6 +834,84 @@
                         GitHub
                     </a>
                     <a href="https://pulsedatalabs.github.io/PulseMilhas/" target="_blank" rel="noopener">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <span data-lang="pt">Documentação</span>
+                        <span data-lang="en">Documentation</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- PulseIFData -->
+            <div class="product-card ifdata-card fade-up" style="transition-delay:.15s">
+                <div class="product-icon-wrap">
+                    <img src="assets/logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
+                </div>
+                <div class="product-name">PulseIFData</div>
+                <div class="product-tagline">
+                    <span data-lang="pt">Inteligência do Sistema Financeiro Nacional · BACEN</span>
+                    <span data-lang="en">National Financial System Intelligence · BACEN</span>
+                </div>
+                <p class="product-desc">
+                    <span data-lang="pt">
+                        Coleta, pivotagem semântica e consolidação histórica de mais de 10 anos de relatórios regulatórios do IFData/BACEN. Monitore a saúde financeira, market share, crescimento, ROE/ROA e índice de inadimplência de instituições financeiras individuais no Brasil.
+                    </span>
+                    <span data-lang="en">
+                        Collection, semantic pivoting, and historical consolidation of 10+ years of IFData/BACEN regulatory reports. Monitor the financial health, market share, growth dynamics, ROE/ROA, and default rates of individual financial institutions in Brazil.
+                    </span>
+                </p>
+                <div class="pill-group">
+                    <span class="pill purple">CSV</span>
+                    <span class="pill">Quarterly</span>
+                    <span class="pill">Bacen</span>
+                    <span class="pill">COSIF</span>
+                    <span class="pill">Market Share</span>
+                    <span class="pill">Python</span>
+                </div>
+                <div class="link-row">
+                    <a href="https://github.com/PulseDataLabs/PulseIFData" target="_blank" rel="noopener">
+                        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                    <a href="https://pulsedatalabs.github.io/PulseIFData/" target="_blank" rel="noopener">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <span data-lang="pt">Documentação</span>
+                        <span data-lang="en">Documentation</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- PulseWhales -->
+            <div class="product-card whales-card fade-up" style="transition-delay:.2s">
+                <div class="product-icon-wrap">
+                    <img src="assets/logo.png" alt="" style="width:30px;height:30px;object-fit:contain;" aria-hidden="true">
+                </div>
+                <div class="product-name">PulseWhales</div>
+                <div class="product-tagline">
+                    <span data-lang="pt">Fluxo de Capital Estrangeiro · B3 · Yahoo Finance</span>
+                    <span data-lang="en">Foreign Capital Flow · B3 · Yahoo Finance</span>
+                </div>
+                <p class="product-desc">
+                    <span data-lang="pt">
+                        Acompanhamento diário e automatizado do fluxo de investidores estrangeiros, institucionais e pessoas físicas na B3. Integração com a cotação do Ibovespa, cálculo de Z-Score sobre janela móvel de 90 dias úteis e análise de correlação.
+                    </span>
+                    <span data-lang="en">
+                        Daily automated tracking of foreign, institutional, and retail investor flows on B3. Integrated with Ibovespa stock price index, computing rolling 90-business-day Z-Score and correlation analysis.
+                    </span>
+                </p>
+                <div class="pill-group">
+                    <span class="pill orange">CSV</span>
+                    <span class="pill">JSON</span>
+                    <span class="pill">Daily</span>
+                    <span class="pill">B3</span>
+                    <span class="pill">Z-Score</span>
+                    <span class="pill">Ibovespa</span>
+                </div>
+                <div class="link-row">
+                    <a href="https://github.com/PulseDataLabs/PulseWhales" target="_blank" rel="noopener">
+                        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                    <a href="https://pulsedatalabs.github.io/PulseWhales/" target="_blank" rel="noopener">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         <span data-lang="pt">Documentação</span>
                         <span data-lang="en">Documentation</span>
@@ -1233,17 +1327,17 @@
                 </span>
             </p>
             <div class="cta-buttons">
-                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseFlat%20-%20Acesso" class="btn-primary" data-lang="pt">
-                    Acessar PulseFlat
+                <a href="mailto:pulsedatalabs@gmail.com?subject=Solicitacao%20de%20Acesso%20a%20Dados%20-%20PulseDataLabs" class="btn-primary" data-lang="pt">
+                    Solicitar Acesso aos Dados ↗
                 </a>
-                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseRatings%20-%20Acesso" class="btn-secondary" data-lang="pt">
-                    Acessar PulseRatings
+                <a href="#produtos" class="btn-secondary" data-lang="pt">
+                    Ver Todos os Produtos
                 </a>
-                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseFlat%20Inquiry" class="btn-primary" data-lang="en">
-                    Request PulseFlat Access
+                <a href="mailto:pulsedatalabs@gmail.com?subject=Data%20Access%20Request%20-%20PulseDataLabs" class="btn-primary" data-lang="en">
+                    Request Data Access ↗
                 </a>
-                <a href="mailto:pulsedatalabs@gmail.com?subject=PulseRatings%20Inquiry" class="btn-secondary" data-lang="en">
-                    Request PulseRatings Access
+                <a href="#produtos" class="btn-secondary" data-lang="en">
+                    View All Products
                 </a>
             </div>
         </div>
@@ -1268,7 +1362,8 @@
                     <li><a href="https://pulsedatalabs.github.io/PulseFlat/" target="_blank">PulseFlat</a></li>
                     <li><a href="https://pulsedatalabs.github.io/PulseRatingsBrasil/" target="_blank">PulseRatings</a></li>
                     <li><a href="https://pulsedatalabs.github.io/PulseMilhas/" target="_blank">PulseMilhas</a></li>
-                    <li><a href="https://github.com/PulseDataLabs" target="_blank">GitHub</a></li>
+                    <li><a href="https://pulsedatalabs.github.io/PulseIFData/" target="_blank">PulseIFData</a></li>
+                    <li><a href="https://pulsedatalabs.github.io/PulseWhales/" target="_blank">PulseWhales</a></li>
                 </ul>
             </div>
             <div class="footer-col">
